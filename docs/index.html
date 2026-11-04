@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>World Games — the AI narrates, the engine decides</title>
+<meta name="description" content="The rules layer for AI-driven interactive games: deterministic rule resolution, 64 MCP tools, a read-only live stage, four playable worlds." />
+<meta property="og:title" content="World Games" />
+<meta property="og:description" content="The AI narrates. The engine decides. 191 rule functions, 64 MCP tools, 4 playable worlds." />
+<meta property="og:image" content="screenshots/stage-xuanshu.png" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0f13'/%3E%3Ctext x='16' y='22.5' font-size='17' text-anchor='middle' fill='%23e8b04b' font-family='serif'%3E%E8%A1%8C%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #0b0d11; --surface: #141820; --surface2: #1b212b; --line: #2b3341;
+    --text: #ecebe6; --dim: #a3abb9; --faint: #7d8695;
+    --accent: #e8b04b; --accent-dim: #8a6a2c; --danger: #e06c62; --success: #6fbf73;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background:
+      radial-gradient(1200px 700px at 15% -10%, rgba(232,176,75,.06), transparent 60%),
+      radial-gradient(900px 600px at 85% 0%, rgba(79,224,192,.05), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font: 16px/1.7 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+  pre {
+    background: #080a0e; border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px; overflow: auto; font-size: 13.5px; line-height: 1.6;
+  }
+  code { background: #0a0c10; border: 1px solid var(--line); border-radius: 4px;
+         padding: 1px 5px; font-size: .9em; }
+  pre code { background: none; border: 0; padding: 0; }
+  .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+
+  nav {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(11,13,17,.86); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap { display: flex; align-items: center; gap: 18px; height: 62px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .seal {
+    width: 32px; height: 32px; display: grid; place-items: center;
+    border: 1px solid var(--accent-dim); border-radius: 8px;
+    background: linear-gradient(160deg, rgba(232,176,75,.18), rgba(232,176,75,.04));
+    color: var(--accent); font-family: Georgia, serif; font-weight: 700; font-size: 18px;
+  }
+  .brand b { font-size: 16px; color: var(--accent); letter-spacing: .04em; }
+  nav .links { margin-left: auto; display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  nav .links a { color: var(--dim); font-size: 14px; }
+  nav .links a:hover { color: var(--text); }
+  .lang { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .lang button {
+    background: transparent; border: 0; color: var(--dim); cursor: pointer;
+    font: inherit; font-size: 13px; padding: 4px 11px;
+  }
+  .lang button[aria-pressed="true"] { background: var(--surface2); color: var(--accent); font-weight: 600; }
+
+  header.hero { padding: 72px 0 40px; text-align: center; }
+  .eyebrow { color: var(--accent); font-size: 13px; letter-spacing: .22em; text-transform: uppercase; }
+  h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.18; margin: 14px 0 16px; font-weight: 700; }
+  h1 .accent { color: var(--accent); }
+  .lede { color: var(--dim); font-size: clamp(15px, 1.5vw, 18px); max-width: 760px; margin: 0 auto; }
+  .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 24px 0 30px; }
+  .badge {
+    font-size: 12.5px; color: var(--dim); border: 1px solid #3b4657;
+    background: var(--surface); border-radius: 999px; padding: 4px 12px;
+  }
+  .badge b { color: var(--accent); font-weight: 600; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+    padding: 10px 22px; border-radius: 10px; font-size: 15px; font-weight: 600;
+    border: 1px solid var(--line); background: var(--surface2); color: var(--text);
+    transition: .18s;
+  }
+  .btn:hover { text-decoration: none; border-color: var(--accent-dim); transform: translateY(-1px); }
+  .btn.primary { background: linear-gradient(180deg, #b98a35, var(--accent-dim)); border-color: var(--accent); color: #fff; }
+
+  section { padding: 62px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: clamp(22px, 3vw, 30px); margin-bottom: 10px; }
+  h2 .accent { color: var(--accent); }
+  .sub { color: var(--dim); margin-bottom: 28px; max-width: 820px; }
+
+  .shot {
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    background: var(--surface); box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  .caption { color: var(--faint); font-size: 13px; padding: 10px 14px; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .card h3 { font-size: 16px; color: var(--accent); margin-bottom: 8px; }
+  .card p { color: var(--dim); font-size: 14.5px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--faint); font-weight: 500; font-size: 13px; }
+  td b { color: var(--accent); }
+  .scroll { overflow-x: auto; }
+
+  .worlds { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .world { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .world img { width: 100%; display: block; }
+  .world div { padding: 12px 14px; }
+  .world b { color: var(--accent); font-size: 15px; }
+  .world span { display: block; color: var(--faint); font-size: 13px; margin-top: 3px; }
+
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .metric { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; }
+  .metric .n { font-size: 26px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .metric .l { font-size: 12.5px; color: var(--faint); margin-top: 4px; }
+
+  footer { padding: 40px 0 60px; color: var(--faint); font-size: 13.5px; text-align: center; }
+  video { width: 100%; display: block; border-radius: 14px; border: 1px solid var(--line); background: #000; }
+
+  /* 语言切换：未选中的语言整段隐藏，且不能与页面布局规则打架。
+     用 :not([data-active=...]) 直接命中"当前不显示的语言"，
+     避免 .world span { display:block } 这类更具体的规则把 hidden 覆盖掉。 */
+  html[data-active="en"] [data-lang="zh"],
+  html[data-active="zh"] [data-lang="en"] { display: none !important; }
+  /* Before the toggle script runs (or if JS is blocked) stay English-only,
+     never show both languages stacked. */
+  html:not([data-active]) [data-lang="zh"] { display: none !important; }
+  html[data-active="en"] tr[data-lang="zh"],
+  html[data-active="zh"] tr[data-lang="en"] { display: none !important; }
+  html[data-active="en"] li[data-lang="zh"],
+  html[data-active="zh"] li[data-lang="en"] { display: none !important; }
+  tr[data-lang] { display: table-row; }
+  li[data-lang] { display: list-item; }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand"><span class="seal">行</span><b>World Games</b></span>
+    <span class="links">
+      <a href="#worlds"><span data-lang="en">Worlds</span><span data-lang="zh">四套世界</span></a>
+      <a href="#gameplay"><span data-lang="en">Gameplay</span><span data-lang="zh">玩法</span></a>
+      <a href="#mechanics"><span data-lang="en">Engine</span><span data-lang="zh">引擎</span></a>
+      <a href="#quality"><span data-lang="en">Quality</span><span data-lang="zh">质量</span></a>
+      <a href="https://github.com/badhope/world-walker">GitHub</a>
+      <span class="lang" role="group" aria-label="Language">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
+      </span>
+    </span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">World Games · v1.5.0</p>
+    <h1>
+      <span data-lang="en">The AI narrates.<br /><span class="accent">The engine decides.</span></span>
+      <span data-lang="zh">AI 负责叙述，<span class="accent">引擎负责结算</span></span>
+    </h1>
+    <p class="lede">
+      <span data-lang="en">The rules layer for AI-driven interactive games. Every hit, price, relationship and
+      faction shift is resolved by a deterministic engine and persisted to one auditable state file.
+      Same state, same seed, same actions — byte-identical replay.</span>
+      <span data-lang="zh">AI 互动游戏的规则层。每一次命中、价格、关系与势力变化都由确定性引擎结算，
+      写进同一份可审计的状态文件。相同状态、种子与行动序列，逐字节可复现。</span>
+    </p>
+    <div class="badges">
+      <span class="badge"><b data-lang="en">stdlib</b><b data-lang="zh">标准库</b> <span data-lang="en">core · MCP optional</span><span data-lang="zh">核心 · MCP 可选</span></span>
+      <span class="badge"><b>64</b> <span data-lang="en">MCP tools</span><span data-lang="zh">个 MCP 工具</span></span>
+      <span class="badge"><b>191</b> <span data-lang="en">rule functions</span><span data-lang="zh">个规则函数</span></span>
+      <span class="badge"><b>4</b> <span data-lang="en">worlds</span><span data-lang="zh">套世界</span></span>
+      <span class="badge"><b>8</b> <span data-lang="en">templates</span><span data-lang="zh">套模板</span></span>
+      <span class="badge"><b>86%</b> <span data-lang="en">coverage</span><span data-lang="zh">覆盖率</span></span>
+      <span class="badge"><b>MIT</b></span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#quickstart"><span data-lang="en">Start in 30 seconds</span><span data-lang="zh">三十秒上手</span></a>
+      <a class="btn" href="screenshots/walkthrough.mp4"><span data-lang="en">▶ Watch the recording</span><span data-lang="zh">▶ 看交互录屏</span></a>
+      <a class="btn" href="https://github.com/badhope/world-walker"><span data-lang="en">Source</span><span data-lang="zh">查看源码</span></a>
+    </div>
+  </div>
+</header>
+
+<section id="stage">
+  <div class="wrap">
+    <h2><span data-lang="en">A stage that <span class="accent">witnesses the world</span></span><span data-lang="zh">主舞台：<span class="accent">看世界怎么动</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">Narrative, HUD, long-run charts, relationship graph, place map, world pulse, codex and market.
+      The panel never writes game state; players queue actions to a sidecar file and the host drains them.</span>
+      <span data-lang="zh">叙事、状态、曲线、关系网、地点图、世界脉搏、图鉴与市场。
+      面板不写游戏状态；玩家把行动排进侧写队列，由宿主取走结算。</span>
+    </p>
+    <div class="shot">
+      <img src="screenshots/stage-xuanshu.png" alt="Live stage, turn 500 of a real save" loading="lazy" />
+      <div class="caption">
+        <span data-lang="en">Xuanshu · ink-gold skin · turn 500 of a real save from docs/demo</span>
+        <span data-lang="zh">玄枢界 · 墨金皮肤 · 第 500 回合（来自 docs/demo 的真实演示存档）</span>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="shot"><img src="screenshots/drawer-world.png" alt="World pulse" loading="lazy" /><div class="caption"><span data-lang="en">World pulse: Panarchy phase, faction stock, connectedness, intensity</span><span data-lang="zh">世界脉搏：Panarchy 相位 / 势力存量 / 连接度 / 烈度</span></div></div>
+      <div class="shot"><img src="screenshots/character-card.png" alt="Character card" loading="lazy" /><div class="caption"><span data-lang="en">Character card: click anyone on stage to read their card text</span><span data-lang="zh">角色卡：点开在场人物，读卡面文字</span></div></div>
+      <div class="shot"><img src="screenshots/command-palette.png" alt="Command palette" loading="lazy" /><div class="caption"><span data-lang="en">Command palette: Ctrl/⌘+K, fully keyboard reachable</span><span data-lang="zh">命令面板：Ctrl/⌘+K，全键盘可达</span></div></div>
+      <div class="shot"><img src="screenshots/action-queue.png" alt="Action queue" loading="lazy" /><div class="caption"><span data-lang="en">Action queue: queue in the browser, settle in the engine</span><span data-lang="zh">行动队列：浏览器排队，引擎结算</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="worlds">
+  <div class="wrap">
+    <h2><span data-lang="en">Four worlds, <span class="accent">one engine</span></span><span data-lang="zh">四套世界，<span class="accent">同一套引擎</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">Swap worlds without touching code. A bundle declares terms, tiers, currency, place
+      descriptions, lorebook, brand and skin. The panel stops showing "realm / spirit stone" unless that world has them.</span>
+      <span data-lang="zh">换世界不改代码。设定包里写清术语、等级阶梯、货币、地点描写、世界书、品牌与皮肤。
+      面板上不会再出现"境界 / 灵石 / 修行轨"——除非这个世界本就该有。</span>
+    </p>
+    <div class="worlds">
+      <div class="world"><img src="screenshots/stage-xuanshu.png" alt="Xuanshu" loading="lazy" /><div><b>Xuanshu</b><span><span data-lang="en">Eastern fantasy · ten tiers · crystal economy · 8 factions</span><span data-lang="zh">东方玄幻 · 十阶修行 · 玄晶经济 · 8 势力</span></span></div></div>
+      <div class="world"><img src="screenshots/stage-ink.png" alt="Zhejian" loading="lazy" /><div><b>Zhejian</b><span><span data-lang="en">Wuxia · seven tiers · silver · broken-sword main line</span><span data-lang="zh">武侠 · 七阶身手 · 银两 · 断剑主线</span></span></div></div>
+      <div class="world"><img src="screenshots/stage-neon.png" alt="Neon Abyss" loading="lazy" /><div><b>Neon Abyss</b><span><span data-lang="en">Cyberpunk · F–S ratings · credits · cyberware and memory</span><span data-lang="zh">赛博朋克 · F–S 评级 · 信用点 · 义体与记忆</span></span></div></div>
+      <div class="world"><img src="screenshots/stage-neutral.png" alt="Fogport" loading="lazy" /><div><b>Fogport</b><span><span data-lang="en">Investigation · six tiers · sanity · lighthouse mystery</span><span data-lang="zh">调查悬疑 · 六阶调查 · 理智 · 灯塔谜题</span></span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="gameplay">
+  <div class="wrap">
+    <h2><span data-lang="en">Four <span class="accent">play loops</span>, one rule set</span><span data-lang="zh">四种<span class="accent">玩法循环</span>，同一套规则</span></h2>
+    <p class="sub">
+      <span data-lang="en"><code>playbook</code> configures the loop, progress axis, failure condition, beats and
+      context policy. Loops guide the host; the engine does not enforce them.</span>
+      <span data-lang="zh"><code>playbook</code> 配置循环类型、进度轴、失败条件、节拍和上下文策略。
+      玩法循环是宿主叙事指引，不由引擎强制执行。</span>
+    </p>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th><span data-lang="en">Bundle</span><span data-lang="zh">设定包</span></th>
+            <th><span data-lang="en">Loop</span><span data-lang="zh">玩法循环</span></th>
+            <th><span data-lang="en">Progress</span><span data-lang="zh">进度轴</span></th>
+            <th><span data-lang="en">Failure</span><span data-lang="zh">失败条件</span></th>
+            <th><span data-lang="en">Beats</span><span data-lang="zh">节拍</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Xuanshu</b></td>
+            <td><span data-lang="en">freeform</span><span data-lang="zh">自由推进 freeform</span></td>
+            <td><span data-lang="en">tier 0–10</span><span data-lang="zh">修行阶 0–10</span></td>
+            <td><span data-lang="en">hp</span><span data-lang="zh">重伤退场（hp）</span></td>
+            <td><span data-lang="en">daily · friction · mortal peril (every 6)</span><span data-lang="zh">日常修行 → 势力摩擦 → 生死一线（每 6 回合）</span></td>
+          </tr>
+          <tr>
+            <td><b>Zhejian</b></td>
+            <td><span data-lang="en">ttrpg</span><span data-lang="zh">声明→判定→后果 ttrpg</span></td>
+            <td><span data-lang="en">skill 0–7</span><span data-lang="zh">身手 0–7</span></td>
+            <td><span data-lang="en">clock 12</span><span data-lang="zh">债主上门（clock 12）</span></td>
+            <td><span data-lang="en">job · recon · strike · cost (every 4)</span><span data-lang="zh">接活 → 踩点 → 动手 → 代价（每 4 回合）</span></td>
+          </tr>
+          <tr>
+            <td><b>Neon Abyss</b></td>
+            <td><span data-lang="en">mud</span><span data-lang="zh">地点与命令 mud</span></td>
+            <td><span data-lang="en">rating 0–7</span><span data-lang="zh">评级 0–7</span></td>
+            <td><span data-lang="en">clock 10</span><span data-lang="zh">被盯上（clock 10）</span></td>
+            <td><span data-lang="en">errand · contact · intrusion · fallout (every 4)</span><span data-lang="zh">跑腿 → 接头 → 侵入 → 翻车（每 4 回合）</span></td>
+          </tr>
+          <tr>
+            <td><b>Fogport</b></td>
+            <td><span data-lang="en">choice</span><span data-lang="zh">选项推进 choice</span></td>
+            <td><span data-lang="en">clues 0–24</span><span data-lang="zh">线索 0–24</span></td>
+            <td><span data-lang="en">sanity</span><span data-lang="zh">理智（sanity）</span></td>
+            <td><span data-lang="en">anomaly · clue · deeper doubt (every 5)</span><span data-lang="zh">异常 → 线索 → 更深的疑问（每 5 回合）</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid3" style="margin-top:16px">
+      <div class="card"><h3><span data-lang="en">Questlines</span><span data-lang="zh">事业线</span></h3><p><span data-lang="en">Stage DAG plus world-state predicates. A quest declares objectives and pressure, never a process. Dormant quests stay hidden; a stage without <code>exit_if</code> never advances on its own.</span><span data-lang="zh">stage DAG + 世界状态谓词。任务只声明目标与压力，不声明过程；dormant 的线不显示，没 <code>exit_if</code> 的一幕永不自动推进。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Lorebook</span><span data-lang="zh">世界书</span></h3><p><span data-lang="en">Four-value selectiveLogic, probability, sticky/cooldown, group exclusivity, recursion switch — tavern semantics, but the clock is the tick and results reproduce.</span><span data-lang="zh">selectiveLogic 四值、概率、sticky/cooldown、同组互斥、递归开关——与酒馆语义对齐，但时间是 tick，可复现。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Failure clock</span><span data-lang="zh">失败钟</span></h3><p><span data-lang="en">Failure is not only hit points. A creditor at the door, a tail, or a drained sanity meter are all configurable failure conditions advanced by <code>failure_tick</code>.</span><span data-lang="zh">不是"扣血才算失败"：债主上门、被盯上、理智耗尽都是可配置的失败条件，由 <code>failure_tick</code> 推进。</span></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="mechanics">
+  <div class="wrap">
+    <h2><span data-lang="en">The world <span class="accent">moves on its own</span></span><span data-lang="zh">世界<span class="accent">自己会动</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">Every <code>tick</code> advances factions, rumors, culture, NPCs and the Panarchy cycle.
+      Do not call it and the world stands still — that is intentional.</span>
+      <span data-lang="zh">宿主调用 <code>tick</code> 时推进世界演化，包括势力、谣言、风气、NPC 与 Panarchy 相位。
+      不调用时世界不会自行推进。</span>
+    </p>
+    <div class="grid3">
+      <div class="card"><h3><span data-lang="en">Faction ebb and flow</span><span data-lang="zh">势力消长</span></h3><p><span data-lang="en">Each faction has a deterministic endowment cap: logistic growth, mild Lotka–Volterra pressure between the top two, challenger backflow. Stable hierarchy long-term, turnover short-term.</span><span data-lang="zh">每个势力有确定性禀赋上限，logistic 增长 + 头部两家 Lotka–Volterra 温和压制 + 挑战者回流。长期有格局，短期有换手。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Rumor and culture</span><span data-lang="zh">谣言与风气</span></h3><p><span data-lang="en">One SIR step spreads rumors; Deffuant bounded confidence moves culture. New rumors seed only on high debt, price anomalies or violent phases.</span><span data-lang="zh">SIR 一步传播谣言，Deffuant 有界信任推动风气。业债高、物价异动、相位剧烈时才播种新传闻。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Panarchy cycle</span><span data-lang="zh">Panarchy 四段环</span></h3><p><span data-lang="en">r growth → K conservation → Ω collapse → α reorganisation, driven by real stock rather than a lookup table. Ω sharply raises event probability and damage.</span><span data-lang="zh">r 增长 → K 守恒 → Ω 崩溃 → α 重组，由真实存量驱动，不是查表。Ω 期事件概率与伤害显著更高。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Derived metrics settle</span><span data-lang="zh">派生指标进结算</span></h3><p><span data-lang="en">Phase modulates events and combat, flow modulates hit chance, six-axis morality modulates social outcomes, tiers add combat power and gate breakthroughs.</span><span data-lang="zh">相位调制事件与战斗，心流调制命中，六维道德调制社交，等级阶梯给战力加成并限制突破。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Karma ledger</span><span data-lang="zh">因果债</span></h3><p><span data-lang="en">Structured entries: type, amount, creditor, turn, settled. Unsettled debt lowers breakthrough odds and raises tribulation severity.</span><span data-lang="zh">结构化账本：类型 / 金额 / 债主 / 回合 / 是否结清。未清债务压低突破成功率，并进入"天劫"强度。</span></p></div>
+      <div class="card"><h3><span data-lang="en">Long-game memory</span><span data-lang="zh">长局记忆</span></h3><p><span data-lang="en">Summaries, milestones and generational archive. Rolling back switches archive files; it never deletes history already written.</span><span data-lang="zh">摘要 + 大事记 + 世代归档。回退只切换归档文件，绝不删除已写下的历史。</span></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap">
+    <h2><span data-lang="en">Scope</span><span data-lang="zh">项目<span class="accent">范围</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">In scope: rule resolution, setting bundles, saves, host narration guidance, SillyTavern
+      character cards and world info. Out of scope by design: image generation, multiplayer, cloud accounts,
+      plugin marketplace.</span>
+      <span data-lang="zh">提供规则结算、设定包、存档和宿主叙事指引，并支持读取 SillyTavern 角色卡与世界书。
+      明确不做：图像生成、多人联机、云端账号体系、插件市场。</span>
+    </p>
+  </div>
+</section>
+
+<section id="quality">
+  <div class="wrap">
+    <h2><span data-lang="en">Quality is <span class="accent">verifiable</span></span><span data-lang="zh">质量是<span class="accent">可验证的</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">No pytest suite, by design. Verification is executable self-checks, behavior regressions
+      and mutation testing: an assertion must be killable, not merely covered.</span>
+      <span data-lang="zh">没有 pytest 套件，这是设计选择。验证包括可执行自检、行为回归和变异测试：
+      断言必须能被"改坏代码"杀死，而不是只被覆盖率统计到。</span>
+    </p>
+    <div class="metrics">
+      <div class="metric"><div class="n">17</div><div class="l"><span data-lang="en">verify_* suites</span><span data-lang="zh">个 verify_* 自检</span></div></div>
+      <div class="metric"><div class="n">0%</div><div class="l"><span data-lang="en">mutant survival rate</span><span data-lang="zh">变异存活率</span></div></div>
+      <div class="metric"><div class="n">86%</div><div class="l"><span data-lang="en">core coverage</span><span data-lang="zh">核心域覆盖率</span></div></div>
+      <div class="metric"><div class="n">500</div><div class="l"><span data-lang="en">turn stress run, 0 violations</span><span data-lang="zh">轮真实压测，0 违规</span></div></div>
+      <div class="metric"><div class="n">0</div><div class="l"><span data-lang="en">runtime dependencies</span><span data-lang="zh">个运行时依赖</span></div></div>
+      <div class="metric"><div class="n">MIT</div><div class="l"><span data-lang="en">license</span><span data-lang="zh">许可</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <div class="wrap">
+    <h2><span data-lang="en">Start in <span class="accent">30 seconds</span></span><span data-lang="zh">三十秒<span class="accent">上手</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">Core needs only the Python standard library; MCP clients install the optional extra.
+      <code>world-walker-mcp</code> remains a compatibility alias.</span>
+      <span data-lang="zh">核心仅需 Python 标准库；MCP 客户端需要安装可选依赖。旧命令 world-walker-mcp 保留为兼容别名。</span>
+    </p>
+    <div class="grid2">
+      <div class="card">
+        <h3>1 · <span data-lang="en">Install</span><span data-lang="zh">安装</span></h3>
+        <pre><code>pip install -e ".[mcp]"</code></pre>
+        <h3 style="margin-top:18px">2 · <span data-lang="en">Register</span><span data-lang="zh">接入</span></h3>
+        <pre><code>{
+  "mcpServers": {
+    "world-games": { "command": "world-games-mcp" }
+  }
+}</code></pre>
+      </div>
+      <div class="card">
+        <h3>3 · <span data-lang="en">Start a game</span><span data-lang="zh">开一局</span></h3>
+        <pre><code>load_setting(path="settings/玄枢界.setting.json")</code></pre>
+        <h3 style="margin-top:18px">4 · <span data-lang="en">Take a turn</span><span data-lang="zh">走一步</span></h3>
+        <pre><code>trade(location="临川城", item="ningyuan_dan",
+      direction="buy", quantity=1)
+social(actor="player", target="shi_sanniang",
+       event="cooperate")
+narration_context(scene_text="万石商行")
+publish_prose(text="……")
+tick()</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap">
+    <h2><span data-lang="en">A real <span class="accent">interaction recording</span></span><span data-lang="zh">真实交互<span class="accent">录屏</span></span></h2>
+    <p class="sub">
+      <span data-lang="en">Playwright drives a real Edge browser against the real panel and records it. Not a motion mock-up.</span>
+      <span data-lang="zh">Playwright 在真实 Edge 中操作真实面板并录制，不是动效演示稿。</span>
+    </p>
+    <video controls preload="metadata" poster="screenshots/stage-xuanshu.png">
+      <source src="screenshots/walkthrough.mp4" type="video/mp4" />
+      <span data-lang="en">Your browser does not support video. <a href="screenshots/walkthrough.mp4">Download it</a>.</span>
+      <span data-lang="zh">你的浏览器不支持 video 标签，可直接 <a href="screenshots/walkthrough.mp4">下载观看</a>。</span>
+    </video>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>World Games · MIT · <span data-lang="en">charts by ECharts 5.5.1 (Apache-2.0)</span><span data-lang="zh">图表库 ECharts 5.5.1（Apache-2.0）</span></p>
+    <p style="margin-top:8px">
+      <a href="https://github.com/badhope/world-walker">GitHub</a> ·
+      <a href="https://gitee.com/badhope/world-walker">Gitee</a> ·
+      <a href="https://gitcode.com/badhope/world-walker">GitCode</a> ·
+      <a href="https://github.com/badhope/world-walker#readme">README</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var buttons = document.querySelectorAll('[data-set-lang]');
+  var stored = null;
+  try { stored = localStorage.getItem('wg-lang'); } catch (e) { /* storage blocked */ }
+  var initial = stored === 'zh' || stored === 'en' ? stored : 'en';
+
+  function apply(lang) {
+    root.setAttribute('data-active', lang);
+    root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].setAttribute('aria-pressed', buttons[i].getAttribute('data-set-lang') === lang ? 'true' : 'false');
+    }
+    try { localStorage.setItem('wg-lang', lang); } catch (e) { /* storage blocked */ }
+  }
+
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', function () { apply(this.getAttribute('data-set-lang')); });
+  }
+  apply(initial);
+})();
+</script>
+
+</body>
+</html>

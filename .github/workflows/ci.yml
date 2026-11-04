@@ -1,0 +1,297 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 第一层：零依赖核心（只要 Python 标准库）────────────────────────────
+  # 这条作业证明 README 宣称的"仅标准库"是真的：不装 mcp、不装 numpy。
+  core:
+    name: core (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: 确认没有第三方依赖被装上
+        run: |
+          python - <<'PY'
+          import importlib
+          import sys
+
+          failed = False
+          for name in ("numpy", "mcp"):
+              try:
+                  importlib.import_module(name)
+              except ModuleNotFoundError as exc:
+                  if exc.name == name or (exc.name or "").startswith(name + "."):
+                      print(f"{name} 不存在：符合预期")
+                  else:
+                      print(f"::error::{name} 导入时缺少传递依赖 {exc.name}: {exc}", file=sys.stderr)
+                      failed = True
+              except Exception as exc:
+                  print(f"::error::{name} 导入发生真实环境错误 {type(exc).__name__}: {exc}", file=sys.stderr)
+                  failed = True
+              else:
+                  print(f"::error::{name} 存在，零依赖宣称不成立" if name == "numpy"
+                        else "::error::mcp 存在，应留到 mcp 作业")
+                  failed = True
+          raise SystemExit(1 if failed else 0)
+          PY
+
+      - name: 编译全部 Python 源
+        run: python scripts/compile_all.py
+
+      - name: 断言审计（拒绝恒真/恒假/弱断言）
+        run: python scripts/verify_tests.py
+
+      - name: 行为回归（MCP 使用 stub）
+        run: python scripts/run_behavior_regressions.py
+
+      - name: CLI 通道自检
+        run: python scripts/verify_cli.py
+
+      - name: 面板契约自检
+        run: python scripts/verify_panel.py
+
+      - name: 濒死保护自检
+        run: python scripts/verify_near_death.py
+
+      - name: 规则内核公式对拍
+        run: python scripts/verify_formulas.py
+
+      - name: 模块分支补测
+        run: python scripts/verify_branches.py
+
+      - name: 长局内存稳定性
+        run: |
+          python -m pip install --quiet psutil
+          python scripts/verify_memory.py 300
+
+      - name: 世界演化与结算耦合
+        run: python scripts/verify_world.py
+
+      # 这一步在 core 作业里跑，环境**没有** mcp —— verify_settings 若能通过，
+      # 就证明"设定包 → 状态"这条路径确实只依赖标准库。
+      - name: 多世界观设定包（零依赖路径）
+        run: python scripts/verify_settings.py
+
+      - name: 数字信源（docs/metrics.json 必须与源码实测一致）
+        run: python scripts/metrics.py --check
+
+      - name: 面板国际化（键唯一/模板无歧义/双语接线）
+        run: python scripts/verify_i18n.py
+
+      - name: 交付面（wg 子命令 / doctor / init / 资源 / 控制台 / 打包守卫）
+        run: python scripts/verify_surface.py
+
+      - name: 文档一致性
+        run: python scripts/verify_docs.py
+
+      - name: 玩法层（剧本/事业线/世界书语义）
+        run: python scripts/verify_gameplay.py
+
+      - name: 通用游戏层（判定/档案/上下文/存档库）
+        run: python scripts/verify_generic.py
+
+      - name: 体系与模板（七类体系/八套模板）
+        run: python scripts/verify_systems.py
+
+      - name: 覆盖率门禁（核心域 ≥70%）
+        run: |
+          python -m pip install --quiet coverage
+          rm -f .coverage
+          for suite in verify_formulas verify_branches verify_cli verify_panel verify_near_death verify_world verify_gameplay verify_generic verify_systems; do
+            python -m coverage run --append --source=rules,panel,state_schema,settings_loader,sessions "scripts/$suite.py"
+          done
+          python -m coverage report | tee /tmp/cov.txt
+          PCT=$(awk '/^TOTAL/ {gsub("%","",$NF); print $NF}' /tmp/cov.txt)
+          python -c "import sys; sys.exit(0 if float('$PCT') >= 70 else 1)"             || { echo "::error::覆盖率 ${PCT}% 低于 70% 红线"; exit 1; }
+
+      - name: 引擎纯函数烟测（无 numpy 环境）
+        run: |
+          python engine.py --help > /dev/null
+          python init_game.py "$RUNNER_TEMP/smoke.json"
+          python engine.py world_state --state "$RUNNER_TEMP/smoke.json" > /dev/null
+          python engine.py combat --state "$RUNNER_TEMP/smoke.json" \
+            --attacker player --defender goblin > /dev/null
+          echo "CLI 在无第三方依赖环境下可运行"
+
+  # ── 第二层：MCP 端到端（需要 mcp SDK）──────────────────────────────────
+  mcp:
+    name: mcp e2e (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: 安装锁定的 MCP 依赖并验证 pyproject extra
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-mcp.lock.txt
+          python -m pip install --no-deps -e ".[mcp]"
+          python -m pip check
+
+      - name: 确认 MCP SDK 可导入
+        run: |
+          python - <<'PY'
+          import importlib
+          import sys
+
+          try:
+              importlib.import_module("mcp")
+          except ModuleNotFoundError as exc:
+              if exc.name == "mcp" or (exc.name or "").startswith("mcp."):
+                  print("::error::mcp 模块不存在", file=sys.stderr)
+              else:
+                  print(f"::error::mcp 导入时缺少传递依赖 {exc.name}: {exc}", file=sys.stderr)
+              raise SystemExit(1)
+          except Exception as exc:
+              print(f"::error::mcp 导入发生真实环境错误 {type(exc).__name__}: {exc}", file=sys.stderr)
+              raise SystemExit(1)
+          print("mcp SDK 可导入")
+          PY
+
+      - name: 真实 MCP SDK 严格回归
+        env:
+          WORLD_GAMES_STRICT: "1"
+        run: |
+          python scripts/verify_world.py
+          python scripts/verify_generic.py
+          python scripts/verify_systems.py
+
+      - name: 审计修复回归
+        run: python scripts/verify_audit_fix.py
+
+      - name: MCP 端到端自检
+        run: python scripts/verify_mcp_stdio.py
+
+      - name: 提示词注入防护
+        run: python scripts/verify_injection.py
+
+      - name: 变异测试（已知错误必须被杀死）
+        run: python scripts/verify_mutation.py
+
+      - name: 玩家视角试玩
+        run: python scripts/user_playtest.py
+
+      - name: 长局压力测试（500 轮，CI 提速版）
+        run: python scripts/stress_freeplay.py 500
+
+  # ── 第三层：打包完整性（wheel / sdist 真的能装能跑）────────────────────
+  package:
+    name: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 构建 sdist + wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: 校验 wheel 内含全部运行时资源
+        run: python scripts/check_wheel.py dist
+
+      - name: 从 wheel 安装并跑起来（真机验证）
+        run: |
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet dist/*.whl
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/venv/bin/python" -c "
+          import game_engine, os
+          root = os.path.dirname(game_engine.__file__)
+          for f in ('panel.html','panel.css','panel.js','assets/echarts.min.js'):
+              p = os.path.join(root, f)
+              assert os.path.exists(p), 'missing ' + p
+          print('安装包资源齐全')
+          "
+          "$RUNNER_TEMP/venv/bin/world-walker" --help > /dev/null
+          echo "entry point 可用"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+          retention-days: 7
+
+  # ── 展示站（GitHub Pages）素材校验：缺图/缺视频直接红 ─────────────────
+  showcase:
+    name: showcase assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 展示素材齐全且非空
+        run: |
+          python - <<'PY'
+          import os, sys
+          need = [
+              "docs/index.html",
+              "docs/screenshots/stage-xuanshu.png",
+              "docs/screenshots/stage-ink.png",
+              "docs/screenshots/stage-neon.png",
+              "docs/screenshots/stage-neutral.png",
+              "docs/screenshots/command-palette.png",
+              "docs/screenshots/character-card.png",
+              "docs/screenshots/action-queue.png",
+              "docs/screenshots/walkthrough.mp4",
+              "docs/demo/玄枢界.save.json",
+              "docs/BENCHMARK.md",
+          ]
+          missing = [p for p in need if not os.path.exists(p) or os.path.getsize(p) == 0]
+          print("missing/empty:", missing)
+          sys.exit(1 if missing else 0)
+          PY
+      - name: 演示存档可被引擎载入
+        run: |
+          python - <<'PY'
+          import json
+          for w in ("玄枢界", "折剑行", "霓虹深渊", "雾港"):
+              p = "docs/demo/%s.save.json" % w
+              d = json.load(open(p, encoding="utf-8"))
+              assert d.get("tick", 0) > 0, p
+              assert d.get("entities", {}).get("player"), p
+              print(w, "tick", d["tick"], "phase", (d.get("panarchy") or {}).get("phase"))
+          PY
+
+  # ── 汇总门禁：三平台 CI 的单一判据 ────────────────────────────────────
+  gate:
+    name: CI gate
+    if: always()
+    needs: [core, mcp, package, showcase]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 任一作业未成功则整体失败
+        run: |
+          echo "core=${{ needs.core.result }} mcp=${{ needs.mcp.result }} package=${{ needs.package.result }} showcase=${{ needs.showcase.result }}"
+          if [ "${{ needs.core.result }}" != "success" ] || \
+             [ "${{ needs.mcp.result }}" != "success" ] || \
+             [ "${{ needs.package.result }}" != "success" ] || \
+             [ "${{ needs.showcase.result }}" != "success" ]; then
+            echo "::error::CI 门禁未通过"
+            exit 1
+          fi
+          echo "CI 全绿"
