@@ -1,0 +1,20 @@
+# 依赖锁定（mcp 可选依赖链）
+#
+# 为什么需要：pyproject.toml 里 `mcp>=2.3,<3` 是区间，上游发新版可能带行为变更或
+# 引入漏洞。本文件把 CI 与实际验证过的版本钉住，作为"可复现构建"的基准。
+#
+# 用法：pip install -r requirements-mcp.lock.txt
+# 更新：改版本号后必须跑一遍 scripts/verify_mcp_stdio.py + scripts/smoke_ui.py
+#
+# 校验记录（2026-10-22）：全部 10 个包经 OSV.dev 查询，已知漏洞 0 条。
+
+mcp==2.3.0
+anyio==4.15.1
+httpx==0.28.1
+httpx-sse==0.4.3
+pydantic==2.14.1
+pydantic-core==2.50.1
+pydantic-settings==2.16.0
+sse-starlette==3.5.0
+starlette==1.8.0
+uvicorn==0.54.0
