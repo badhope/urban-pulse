@@ -1,0 +1,71 @@
+__pycache__/
+*.pyc
+*.pyo
+*.swp
+.DS_Store
+# 合并用临时块（生成后即并入源文件，不许入库）
+.tmp_*
+.tmp/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Runtime state (_player save files_)
+game_state.json
+ww_state.json
+# 存档库（sessions 的默认目录；用户对局不应进版本库）
+saves/
+ww_live.json
+ww_smoke.json
+ww_viz.json
+ww_brand.json
+*.save.json
+# 演示存档是交付物（README/截图/视频的数据源），必须入库
+!docs/demo/*.save.json
+
+# Browser smoke screenshots (scripts/_shots)
+scripts/_shots/
+
+# Panel telemetry sidecar (long-run samples)
+*.viz.jsonl
+!docs/demo/*.viz.jsonl
+
+# Stress test artifacts
+scripts/last_stress_report.json
+err*.log
+.aqg/
+
+# Pre-push gate artifacts
+.gate_out.log
+.gate-dist/
+
+# Coverage
+.cov
+.coverage
+.cov-gate
+scripts/_ui_shots/
+.cov-mcp
+.covdata*
+.covsite
+.covrc
+scripts/_verify_mcp_cov_tmp.py
+.cov-mcp.*
+.coverage.*
+
+# 素材流水线的中间报告（可随时重跑生成，不入库）
+scripts/_shots_report.json
+scripts/_ui_report.json
+
+# 编辑器/会话状态
+.zcode/
+
+# 运行时锁文件（状态/存档库/侧写共用，进程退出即失效，绝不入库）
+*.lock
+
+# 发布产物：可执行文件走 GitHub/Gitee Release 附件，不进 git 历史
+# （31 MB 二进制进仓库会让 clone 永久变重，且超过 API 单 blob 上传的可靠性边界）
+release/

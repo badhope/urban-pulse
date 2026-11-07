@@ -1,0 +1,25 @@
+# sdist 打包清单：把面板资源、图像资产与文档一并带上
+# （wheel 侧由 pyproject 的 tool.setuptools.package-data 负责）
+
+include LICENSE
+include README.md
+include README.en.md
+include BRAND.md
+include ARCHITECTURE.md
+include GAME_MASTER_PROTOCOL.md
+include pyproject.toml
+
+recursive-include assets *.js
+recursive-include settings *.json *.md
+recursive-include scripts *.py
+recursive-include docs *.png *.md *.mp4 *.json *.jsonl
+
+include panel.html
+include panel.css
+include panel.js
+include panel.theme.js
+include panel.i18n.js
+
+prune __pycache__
+prune .aqg
+global-exclude *.py[cod]

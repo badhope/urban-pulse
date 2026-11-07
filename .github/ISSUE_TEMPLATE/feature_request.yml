@@ -1,0 +1,41 @@
+name: Feature request
+description: 提出一个新功能或设定包
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先看 `ROADMAP.md` 的 P3「明确不做」清单，避免重复讨论。
+        新增**设定包**不需要走这个模板——按 `CONTRIBUTING.md` 的六步做即可。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你遇到的问题
+      description: 描述场景，而不是直接给方案
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 你希望的解法
+    validations:
+      required: true
+  - type: dropdown
+    id: layer
+    attributes:
+      label: 属于哪一层
+      options:
+        - 规则内核（rules/）
+        - MCP 工具层
+        - 面板（只读展示）
+        - 设定包 / 文档
+        - 工程与测试
+    validations:
+      required: true
+  - type: textarea
+    id: invariants
+    attributes:
+      label: 对不变量的影响
+      description: 是否影响确定性 / 面板只读 / 零依赖？如果不确定，写"不确定"
+    validations:
+      required: true

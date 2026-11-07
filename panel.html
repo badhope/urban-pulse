@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="World Games · 主舞台：只读展示任意互动游戏的对局状态、判定记录与上下文台账。" />
+<meta name="theme-color" content="#f6f4ee" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0f13'/%3E%3Ctext x='16' y='22.5' font-size='17' text-anchor='middle' fill='%23e8b04b' font-family='serif'%3E%E8%A1%8C%3C/text%3E%3C/svg%3E" />
+<title>World Games · 主舞台</title>
+<link rel="stylesheet" href="/panel.css" />
+<script src="/panel.theme.js"></script>
+</head>
+<body data-skin="neutral" data-boot="loading">
+<div class="bootbar" id="bootbar" aria-hidden="true"></div>
+<span class="boot-status" id="boot-status" role="status" aria-live="polite">正在加载对局状态…</span>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="seal" aria-hidden="true">行</span>
+    <div class="brandtext">
+      <h1 class="wordmark">World Games</h1>
+      <span class="tagline">万物皆可为一局 · 规则为证</span>
+    </div>
+  </div>
+  <span class="meta" id="world">—</span>
+  <span class="meta" id="era"></span>
+  <span class="meta" id="tick">回合 —</span>
+  <span class="meta" id="clock">—</span>
+  <span class="spacer"></span>
+  <span class="conn" id="conn" data-state="connecting" role="status" aria-live="polite">
+    <span class="dot" aria-hidden="true"></span><span id="conn-text">连接中…</span>
+  </span>
+  <button class="tbtn" id="help-btn" type="button" title="帮助与术语（快捷键 ?）"
+          aria-haspopup="dialog">帮助 <kbd>?</kbd></button>
+  <button class="tbtn" id="palette-btn" type="button" title="命令面板（Ctrl/⌘ + K）"
+          aria-haspopup="dialog">命令 <kbd>⌘K</kbd></button>
+  <button class="tbtn" id="share-btn" type="button" aria-pressed="false"
+          title="分享模式：隐藏存档路径与操作提示，适合截图与直播">分享模式</button>
+  <button class="tbtn" id="story-btn" type="button" title="打开剧情回放（快捷键 S）"
+          aria-haspopup="dialog">剧情 <kbd>S</kbd></button>
+  <button class="tbtn" id="export-btn" type="button" title="下载当前对局状态 JSON（只读导出）">导出</button>
+  <button class="tbtn" id="motion" type="button" aria-pressed="false"
+          title="暂停/恢复界面动效">动效：开</button>
+  <span class="themeswitch" role="group" aria-label="Theme / 主题">
+    <button type="button" class="tbtn" data-set-theme="light" aria-pressed="true" title="亮色主题">亮</button>
+    <button type="button" class="tbtn" data-set-theme="dark" aria-pressed="false" title="暗色主题">暗</button>
+  </span>
+  <span class="langswitch" role="group" aria-label="Language / 语言">
+    <button type="button" class="tbtn" data-set-panel-lang="en" aria-pressed="true">EN</button>
+    <button type="button" class="tbtn" data-set-panel-lang="zh" aria-pressed="false">中文</button>
+  </span>
+</header>
+
+<div class="guide" id="guide" hidden>
+  <span id="guide-text">第一次来？这块是<b>只读主舞台</b>——你玩你的，它跟着变：左侧是你的角色/资源与这一局的玩法，
+    中间是叙事、判定记录与编年史，右侧是在场角色与场景。按 <kbd>?</kbd> 看术语与读图说明。</span>
+  <button class="tbtn" id="guide-close" type="button">知道了</button>
+</div>
+
+<div class="notice" id="notice" role="alert" hidden>
+  <span id="notice-text"></span>
+  <button class="tbtn" id="notice-retry" type="button">重试</button>
+</div>
+
+<main class="stage">
+  <!-- 左：玩家 HUD -->
+  <aside class="hud" aria-label="玩家状态">
+    <section class="card">
+      <h2><span data-term="hero">行者</span> <span class="tag" id="pname-sub"></span></h2>
+      <div class="row"><span class="k">名号</span><b id="pname">—</b></div>
+      <div class="row"><span class="k" data-term="level">境界</span><span id="plevel">—</span></div>
+      <div class="row"><span class="k" data-term="location">所在</span><span id="ploc">—</span></div>
+      <div class="badges" id="badges"></div>
+      <div class="row"><span class="k">气血 <span id="phpn"></span> <span class="chip bad" id="hpwarn" hidden>气血吃紧</span></span><span id="pgold">—</span></div>
+      <div class="barwrap" role="img" aria-label="气血条"><div class="bar hp" id="phpbar" style="width:0"></div></div>
+      <div class="row"><span class="k">内力 <span id="pmpn"></span></span></div>
+      <div class="barwrap" role="img" aria-label="内力条"><div class="bar mp" id="pmpbar" style="width:0"></div></div>
+      <div class="kv" id="pattrs"></div>
+    </section>
+
+    <!-- 通用游戏档案：任何题材都用这一块（旧存档自动从 hp/mp/gold/attrs 推导） -->
+    <section class="card" id="game-card">
+      <h2>游戏档案 <span class="tag" id="game-kind"></span></h2>
+      <div class="row"><span class="k">本局</span><b id="game-title">—</b></div>
+      <div class="kv" id="game-resources"><span class="empty">（无资源轨）</span></div>
+      <div class="kv" id="game-attributes"></div>
+      <div class="kv" id="game-meters"></div>
+      <div class="kv" id="game-tags"></div>
+      <div class="hint" id="game-sheet"></div>
+    </section>
+
+    <section class="card">
+      <h2>状态 · 引擎推导</h2>
+      <div class="row"><span class="k" data-term="flow">心流</span><span id="flow">—</span></div>
+      <div class="row"><span class="k" data-term="phase">世界相位</span><span id="phase">—</span></div>
+      <div class="row"><span class="k" data-term="karma">未清因果债</span><span id="karma">—</span></div>
+      <div class="moral" id="moral"></div>
+      <div class="hint">心流偏低时适合安排缓冲剧情；相位决定大事件的烈度。</div>
+    </section>
+
+    <section class="card">
+      <h2><span data-term="playbook">玩法</span> <span class="tag" id="pb-loop"></span></h2>
+      <div class="row"><span class="k" id="pb-progress-label">进度</span><span id="pb-progress">—</span></div>
+      <div class="barwrap" role="img" aria-label="进度条"><div class="bar" id="pb-bar" style="width:0"></div></div>
+      <div class="row"><span class="k" id="pb-fail-label">失败</span><span id="pb-fail">—</span></div>
+      <div class="barwrap" role="img" aria-label="失败条"><div class="bar danger" id="pb-fail-bar" style="width:0"></div></div>
+      <div class="row"><span class="k">当前节拍</span><span id="pb-beat">—</span></div>
+      <div class="hint" id="pb-guide"></div>
+    </section>
+
+    <section class="card" id="systems-card">
+      <h2><span data-term="systems">体系</span> <span class="tag" id="systems-hint"></span></h2>
+      <div id="system-rows"><span class="empty">这一局还没配置体系——宿主可用 system_define 或 template_start 载入</span></div>
+      <div class="hint" id="systems-note"></div>
+    </section>
+
+    <section class="card">
+      <h2><span data-term="inventory">随身</span> <span class="tag" id="inv-count"></span></h2>
+      <div class="kv" id="inventory"><span class="empty">（空手）</span></div>
+    </section>
+  </aside>
+
+  <!-- 中：叙事主舞台 -->
+  <section class="narrative" aria-label="叙事主舞台">
+    <div class="scene">
+      <div class="scene-head">
+        <h2 id="scene-title">未开幕</h2>
+        <span class="mood" id="scene-mood" data-mood="neutral" hidden></span>
+      </div>
+      <p id="scene-desc" class="empty">等待状态文件…</p>
+      <div class="focus" id="scene-focus" hidden></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <label class="sr-only" for="action-text">你想做什么</label>
+        <textarea id="action-text" rows="1" maxlength="2000"
+                  placeholder="写下这一步想做的事（Enter 排队 / Shift+Enter 换行）"></textarea>
+        <div class="next-moves" id="next-moves" hidden>
+          <span class="nm-label">可以试试</span>
+          <div class="nm-list" id="next-moves-list"></div>
+        </div>
+        <div class="composer-side">
+          <button type="submit" class="tbtn primary" id="action-send">排队</button>
+          <span class="hint">队列 <b id="inbox-count">0</b> 条 · <span id="inbox-status">指挥官在对话里取走</span></span>
+        </div>
+      </form>
+    </div>
+
+    <!-- 判定记录：任何游戏都能用的"这一局掷了什么" -->
+    <section class="card" id="checks-card">
+      <h2>判定记录 <span class="tag" id="checks-hint"></span></h2>
+      <div class="checks" id="checks"><span class="empty">还没有判定——宿主可以调 roll / combat / social 结算</span></div>
+    </section>
+
+    <section class="card" id="quest-card">
+      <h2><span data-term="quests">事业线</span> <span class="tag" id="quest-hint"></span></h2>
+      <div id="quest-list"><span class="empty">这一局还没有浮现的事业线</span></div>
+    </section>
+
+    <section class="card" id="questmap-card" hidden>
+      <h2><span data-term="quests">事业线</span>地图 <span class="tag" id="questmap-hint"></span></h2>
+      <div class="chart" id="questmap" role="img" aria-label="事业线阶段图：已完成/当前/未解锁"></div>
+      <div class="hint">每个点是一幕，箭头是它可以走向下一幕。颜色：已走过 / 正站在这里 / 还没到。</div>
+    </section>
+
+    <section class="card">
+      <h2><span data-term="chronicle">编年史</span> <span class="tag" id="timeline-hint"></span>
+        <button class="tbtn" id="jump-latest" type="button" style="margin-left:auto">跳到最新</button>
+      </h2>
+      <div class="timeline-tools">
+        <label class="sr-only" for="event-search">搜索事件</label>
+        <input id="event-search" type="search" placeholder="搜索事件（如：突破 / 柳寒衣）"
+               autocomplete="off" maxlength="60" />
+        <div class="seg" id="event-filter" role="group" aria-label="按类型筛选事件">
+          <button type="button" class="seg-btn" data-filter="all" aria-pressed="true">全部</button>
+          <button type="button" class="seg-btn" data-filter="combat" aria-pressed="false">交锋</button>
+          <button type="button" class="seg-btn" data-filter="social" aria-pressed="false">人情</button>
+          <button type="button" class="seg-btn" data-filter="trade" aria-pressed="false">交易</button>
+          <button type="button" class="seg-btn" data-filter="milestone" aria-pressed="false">大事</button>
+        </div>
+      </div>
+      <ul class="timeline" id="timeline" aria-live="polite" aria-label="事件时间线">
+        <li class="empty">暂无事件</li>
+      </ul>
+    </section>
+
+    <!-- 长局态势：随回合累积的三张图（离线 ECharts，缺失时降级为文案） -->
+    <section class="card">
+      <h2>行藏曲线 <span class="tag" id="chart1-hint">气血 / 内力 / 钱财 · 随回合</span></h2>
+      <div class="chart" id="chart1" role="img" aria-label="气血内力钱财随回合变化曲线"></div>
+      <div class="chart-empty" id="chart1-empty" hidden>还没有足够的回合样本——推进几个回合后这里会画出行藏曲线。</div>
+    </section>
+    <div class="chart-row">
+      <section class="card">
+        <h2>业债与心境 <span class="tag">未清业债 · 人情均值</span></h2>
+        <div class="chart chart-sm" id="chart2" role="img" aria-label="未清业债与人情均值随回合变化"></div>
+        <div class="chart-empty" id="chart2-empty" hidden>暂无样本。</div>
+      </section>
+      <section class="card">
+        <h2>市价偏离 <span class="tag">1.0 = 基准</span></h2>
+        <div class="chart chart-sm" id="chart3" role="img" aria-label="物价指数偏离基准的走势"></div>
+        <div class="chart-empty" id="chart3-empty" hidden>暂无样本。</div>
+      </section>
+    </div>
+    <section class="card">
+      <h2>世界脉搏 <span class="tag" id="pulse-hint"></span></h2>
+      <div class="pulse" id="pulse">
+        <div class="pulse-phase"><span class="pulse-badge" id="pulse-phase" data-phase="">—</span>
+          <span class="hint" id="pulse-trigger"></span></div>
+        <div class="pulse-meters">
+          <div class="meter"><span class="k">存量</span><div class="meter-bar"><i id="meter-capital" style="width:0"></i></div><b id="meter-capital-n">—</b></div>
+          <div class="meter"><span class="k">连接度</span><div class="meter-bar"><i id="meter-conn" style="width:0"></i></div><b id="meter-conn-n">—</b></div>
+          <div class="meter"><span class="k">烈度</span><div class="meter-bar"><i id="meter-int" style="width:0"></i></div><b id="meter-int-n">—</b></div>
+        </div>
+        <div class="kv" id="pulse-factions"></div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>事件谱 <span class="tag" id="spectrum-hint"></span></h2>
+      <div class="spectrum" id="spectrum" aria-label="按类型的事件分布"></div>
+    </section>
+  </section>
+
+  <!-- 右：在场 + 关系 + 世界网格 -->
+  <aside class="cast" aria-label="在场角色与关系">
+    <section class="card">
+      <h2><span data-term="present">在场</span> <span class="tag" id="present-count"></span></h2>
+      <div id="present"><span class="empty">此刻无人</span></div>
+      <div id="others" class="hint"></div>
+    </section>
+    <section class="card">
+      <h2><span data-term="relations">人情关系</span> <span class="tag" id="rel-count"></span></h2>
+      <div id="relations" class="kv"><span class="empty">（尚未结缘）</span></div>
+      <div class="relnet" id="relnet" role="img" aria-label="人物关系网：中心为玩家，四周为已结缘人物"></div>
+    </section>
+    <section class="card">
+      <h2><span data-term="territory">境地</span> <span class="tag" id="map-hint"></span></h2>
+      <div class="mapnet" id="mapnet" role="img" aria-label="地点分布：当前所在地高亮，连线表示已走动过的路线"></div>
+      <div class="hint" id="map-legend"></div>
+    </section>
+    <section class="card">
+      <h2><span data-term="track">修行轨</span> <span class="tag" id="stage-hint"></span></h2>
+      <div class="track" id="stage-track"></div>
+    </section>
+  </aside>
+</main>
+
+<!-- 抽屉：图鉴 / 市场 / 大事记 / 世界标记 -->
+<div class="drawers">
+  <details class="drawer" id="drawer-story">
+    <summary><span data-term="story">剧情回放</span> <span class="tag" id="story-hint" style="margin-left:auto"></span></summary>
+    <div class="body">
+      <div class="hint">每一次 <code>publish_prose</code> 的完整正文都在这里（不截断）。面板只读，不会改动剧情。</div>
+      <div class="story-tools">
+        <label class="sr-only" for="story-search">搜索剧情与归档</label>
+        <input id="story-search" type="search" placeholder="搜索剧情 / 归档（如：灯塔 / 沈伯）"
+               autocomplete="off" maxlength="60" />
+        <button class="tbtn" type="button" id="story-refresh">刷新</button>
+        <span class="seg" id="story-scope" role="group" aria-label="检索范围">
+          <button type="button" class="seg-btn" data-scope="all" aria-pressed="true">全部</button>
+          <button type="button" class="seg-btn" data-scope="prose" aria-pressed="false">正文</button>
+          <button type="button" class="seg-btn" data-scope="archive" aria-pressed="false">归档</button>
+        </span>
+      </div>
+      <div id="story-rows"><span class="empty">还没有正文——宿主用 publish_prose 写入后这里会出现</span></div>
+      <div class="hint" id="story-meta"></div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawer-codex">
+    <summary><span data-term="codex">探索图鉴</span> <span class="tag" id="lorecnt" style="margin-left:auto"></span></summary>
+    <div class="body">
+      <div class="row"><span class="k">已探索地点</span></div><div class="kv" id="cx-loc"></div>
+      <div class="row"><span class="k">已遇见人物</span></div><div class="kv" id="cx-people"></div>
+      <div class="row"><span class="k">经手物品</span></div><div class="kv" id="cx-items"></div>
+      <div class="row"><span class="k">已触发设定</span></div><div class="kv" id="cx-lore"></div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawer-market">
+    <summary><span data-term="market">市场行情</span> <span class="tag" style="margin-left:auto">▲高于基准 · ▼低于基准</span></summary>
+    <div class="body"><div id="market"><span class="empty">此界无市</span></div></div>
+  </details>
+
+  <details class="drawer" id="drawer-world">
+    <summary><span data-term="factions">势力</span>与风向 <span class="tag" style="margin-left:auto" id="world-hint"></span></summary>
+    <div class="body">
+      <div class="kv" id="world-factions"><span class="empty">世界还没开始演化</span></div>
+      <div class="row" style="margin-top:8px"><span class="k" data-term="rumors">传闻</span></div>
+      <div class="kv" id="world-rumors"><span class="empty">暂无传闻</span></div>
+      <div class="row" style="margin-top:8px"><span class="k" data-term="culture">风气</span></div>
+      <div class="kv" id="world-culture"><span class="empty">—</span></div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawer-lorebook">
+    <summary><span data-term="lorebook">世界书</span> <span class="tag" id="lore-hint" style="margin-left:auto"></span></summary>
+    <div class="body">
+      <div class="hint">这里显示每条设定的触发次数与冷却剩余——用来解释「为什么这一句被触发」。</div>
+      <div id="lore-rows"></div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawer-milestones">
+    <summary><span data-term="milestones">大事记</span> <span class="tag" id="memhint" style="margin-left:auto"></span></summary>
+    <div class="body"><ul class="timeline" id="milestones" style="max-height:220px"><li class="empty">暂无</li></ul></div>
+  </details>
+
+  <details class="drawer" id="drawer-context">
+    <summary><span data-term="context">上下文台账</span> <span class="tag" id="ctx-hint" style="margin-left:auto"></span></summary>
+    <div class="body">
+      <div class="hint">宿主用 context_remember 记下的线索/承诺/事实。互动对话的"该记住什么"在这里可核对。</div>
+      <div class="kv" id="ctx-stats"></div>
+      <div id="ctx-rows"></div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawer-sessions">
+    <summary><span data-term="sessions">存档库</span> <span class="tag" id="sess-hint" style="margin-left:auto"></span></summary>
+    <div class="body">
+      <div class="hint">面板只读：这里列出存档与进度，切换/新建请让宿主调用 session_switch / session_new。</div>
+      <div id="sess-rows"></div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawer-flags">
+    <summary>世界标记</summary>
+    <div class="body">
+      <div class="kv" id="flags"></div>
+      <div class="hint">面板只读：状态文件一变，本页自动刷新，不会改动对局。</div>
+    </div>
+  </details>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<dialog class="carddlg" id="carddlg" aria-labelledby="card-name">
+  <h3 id="card-name">角色</h3>
+  <div class="card-meta" id="card-meta-line"></div>
+  <div id="card-body"></div>
+  <div class="dlg-actions"><button type="button" id="card-close">知道了（Esc）</button></div>
+</dialog>
+
+<dialog class="palette" id="palette" aria-labelledby="palette-label">
+  <label id="palette-label" class="sr-only">命令面板</label>
+  <input id="palette-input" type="search" placeholder="输入命令：图鉴 / 市场 / 大事 / 帮助 / 导出 / 分享 / 跳到最新 / 主题"
+         autocomplete="off" aria-controls="palette-list" />
+  <ul id="palette-list" role="listbox" aria-label="可用命令"></ul>
+  <p class="hint">↑↓ 选择 · Enter 执行 · Esc 关闭</p>
+</dialog>
+
+<dialog class="eventdlg" id="eventdlg" aria-labelledby="dlg-title">
+  <h3 id="dlg-title"><span id="dlg-icon" aria-hidden="true"></span><span id="dlg-title-text">事件</span></h3>
+  <div class="dlg-meta" id="dlg-meta"></div>
+  <p id="dlg-desc"></p>
+  <div class="dlg-actions">
+    <button type="button" id="dlg-close">知道了（Esc）</button>
+    <button type="button" class="primary" id="dlg-ok">继续</button>
+  </div>
+</dialog>
+
+<dialog class="helpdlg" id="helpdlg" aria-labelledby="help-title">
+  <h3 id="help-title">帮助 · 读这块面板</h3>
+
+  <section class="help-sec">
+    <h4>这是什么</h4>
+    <p>一局由规则引擎结算的文字互动游戏，这块面板是它的<b>只读</b>实况主舞台——
+      显示的是状态文件里真实的结果。你（玩家）和对局助手在别处行动，面板只跟着变，
+      不会改对局，也不会替你掷骰子。</p>
+  </section>
+
+  <section class="help-sec" id="help-glossary">
+    <h4>术语表 <span class="tag">引擎概念的人话版</span></h4>
+    <dl>
+      <dt>气血 / 内力</dt><dd>生命与可消耗的爆发资源。气血低于三成会亮起"气血吃紧"。</dd>
+      <dt>钱财</dt><dd>本世界的货币（玄晶/灵石/信用点…由设定决定）。买入会增加，卖出会回归。</dd>
+      <dt>心流（flow）</dt><dd>战斗难度的舒适度：赢得太容易会"无聊"，输太多会"焦虑"，正好在挑战区才叫心流。</dd>
+      <dt>世界相位（Panarchy）</dt><dd>世界所处的阶段：增长 / 保护 / 崩溃释放 / 重组。大事件的烈度跟着它走。</dd>
+      <dt>未清因果债</dt><dd>你做过的"业"（杀人、偷窃…）累积的债。债越重，突破成功率被压得越低。</dd>
+      <dt>修行阶段（stage）</dt><dd>本次突破的次数进度。到上限后不再增长——该换更强的对手或更远的世界了。</dd>
+      <dt>物价指数</dt><dd>全市场"当前价 ÷ 基准价"的均值。1.0 是正常，越低越适合囤货。</dd>
+      <dt>心意（亲密 / 敬重）</dt><dd>人物关系两维：喜欢你和怕你/服你，是两码事。</dd>
+      <dt>探索图鉴</dt><dd>去过的地方、见过的人、经手的物、触发过的设定——你自己不用记。</dd>
+      <dt>势力与风向</dt><dd>各方存量会随回合自行消长；传闻热度越高，越可能引来是非。你不用管它，它也会动。</dd>
+      <dt>这一回合的正文</dt><dd>中间那段字是你这一步的叙事正文；它由宿主写进存档，换设备打开也是同一段。</dd>
+    </dl>
+  </section>
+
+  <section class="help-sec">
+    <h4>图表怎么读</h4>
+    <ul>
+      <li><b>行藏曲线</b>：气血/内力按百分比看左轴，钱财看右轴（虚线）。陡降常是打架与突破的代价。</li>
+      <li><b>业债与心境</b>：柱是未清业债，线是人情均值。杀人偷窃柱会跳，帮人还债会回落。</li>
+      <li><b>市价偏离</b>：贴着基准线 1.0 走动；明显低于基准＝本地有折价货。</li>
+      <li><b>事件谱</b>：最近事件按危急/警示/顺遂/寻常分档，看得出这段是太平还是多事。</li>
+    </ul>
+  </section>
+
+  <section class="help-sec">
+    <h4>键盘 <span id="help-keys" class="tag">keyboard</span></h4>
+    <ul>
+      <li><kbd>?</kbd> 打开/关闭本帮助；<kbd>Esc</kbd> 关闭任何弹窗（焦点会回到你原来待的控件）。</li>
+      <li><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> 命令面板（图鉴 / 市场 / 导出 / 分享模式…），↑↓ 选择、Enter 执行。</li>
+      <li><kbd>Tab</kbd> 在控件间移动；抽屉与按钮都可用 <kbd>Enter</kbd>/<kbd>Space</kbd> 展开。</li>
+      <li>顶栏「动效：开/关」可暂停所有过渡动画（系统级"减少动态效果"也会自动生效）。</li>
+    </ul>
+  </section>
+
+  <section class="help-sec">
+    <h4>数据与隐私</h4>
+    <ul>
+      <li>状态文件：<code id="help-state-path">—</code>（对局的唯一权威，一切数值以它为准）</li>
+      <li>趋势侧写：<code id="help-sidecar-path">—</code>（面板自己的采样账本，删了只丢曲线，不伤对局）</li>
+      <li>行动队列：你在下方输入的行动会写进同目录的收件箱，由对局助手取走结算——<b>面板本身从不改对局状态</b>。</li>
+      <li>面板只监听本机 <code>127.0.0.1</code>，不向任何外部服务发送数据。</li>
+    </ul>
+  </section>
+
+  <section class="help-sec">
+    <h4>皮肤与品牌 <span class="tag">换世界就换样子</span></h4>
+    <p>当前皮肤：<b id="help-skin">—</b>。皮肤由设定包 / <code>world_init</code> 的
+      <code>ui</code> 字段决定（<code>core: xuanshu / ink / neon / neutral</code>，可加
+      <code>accent</code> 主色与 <code>motif</code> 风格文案）。换世界无需改代码，面板自动适配。</p>
+  </section>
+
+  <div class="dlg-actions">
+    <button type="button" class="primary" id="help-close">知道了（Esc）</button>
+  </div>
+</dialog>
+
+<script src="/assets/echarts.min.js"></script>
+<script src="/panel.i18n.js"></script>
+<script src="/panel.js"></script>
+</body>
+</html>
