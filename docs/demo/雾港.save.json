@@ -1,0 +1,1908 @@
+{
+  "tick": 180,
+  "rng_seed": 20261875,
+  "entities": {
+    "player": {
+      "name": "陆离",
+      "faction": "独立调查员",
+      "attrs": {
+        "str": 13,
+        "dex": 16,
+        "int": 20,
+        "con": 12,
+        "cha": 15
+      },
+      "hp": 54,
+      "hp_max": 54,
+      "mp": 37,
+      "mp_max": 37,
+      "level": "专家",
+      "gold": 31,
+      "location": "永昌号",
+      "skills": [
+        "速记",
+        "基础验尸"
+      ],
+      "morality": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "items": {
+        "whisky": 1,
+        "bandage": 1,
+        "holy_water": 1
+      },
+      "stage": 3
+    },
+    "captain_zhou": {
+      "name": "周船长",
+      "faction": "永昌号",
+      "attrs": {
+        "str": 15,
+        "dex": 11,
+        "int": 12,
+        "con": 14,
+        "cha": 10
+      },
+      "hp": 80,
+      "hp_max": 80,
+      "mp": 30,
+      "mp_max": 30,
+      "level": "老手",
+      "gold": 120,
+      "location": "永昌号",
+      "desc": "跑了三十年海，左脸被盐雾吹得发白。他不信鬼神，但他每次经过灯塔都会把帽子摘下来。",
+      "personality": "粗粝、迷信、护短；对船员比对自己好。",
+      "speech": "「这海上的事，说不清的就别问。问多了，海会记住你。」"
+    },
+    "miss_lin": {
+      "name": "林小姐",
+      "faction": "雾港教会",
+      "attrs": {
+        "str": 8,
+        "dex": 10,
+        "int": 18,
+        "con": 8,
+        "cha": 16
+      },
+      "hp": 45,
+      "hp_max": 45,
+      "mp": 45,
+      "mp_max": 45,
+      "level": "执事",
+      "gold": 300,
+      "location": "雾港教堂",
+      "desc": "教会派来做'心理疏导'的执事，戴着一副细边眼镜。她说话很轻，但每一句都像在记录什么。",
+      "personality": "温和、缜密、有秘密；她相信的东西比教会教的多。",
+      "speech": "「陆先生，你昨晚梦见海了，对吗？……别紧张，我只是问问。」"
+    },
+    "old_shen": {
+      "name": "沈伯",
+      "faction": "灯塔看守",
+      "attrs": {
+        "str": 9,
+        "dex": 9,
+        "int": 14,
+        "con": 12,
+        "cha": 8
+      },
+      "hp": 13,
+      "hp_max": 50,
+      "mp": 0,
+      "mp_max": 0,
+      "level": "凡人",
+      "gold": 20,
+      "location": "灯塔",
+      "desc": "灯塔看守，六十多岁，一个人住在塔下的小屋里。他说自己已经二十年没让灯塔亮过了。",
+      "personality": "沉默、警觉、怕光；每到夜里就把窗户钉死。",
+      "speech": "「灯亮一次，海就记一次。你们城里人不信，可海记性好得很。」"
+    },
+    "inspector_gu": {
+      "name": "顾探长",
+      "faction": "巡捕房",
+      "attrs": {
+        "str": 13,
+        "dex": 12,
+        "int": 15,
+        "con": 12,
+        "cha": 11
+      },
+      "hp": 90,
+      "hp_max": 90,
+      "mp": 20,
+      "mp_max": 20,
+      "level": "老手",
+      "gold": 200,
+      "location": "雾港码头",
+      "desc": "巡捕房的探长，办过七桩失踪案，一桩也没破。他桌上摆着七个空烟盒，每个盒子里装着一张失踪者的照片。",
+      "personality": "固执、疲惫、不肯结案；他不信邪，只信证据。",
+      "speech": "「我不管它是人是鬼。我只问：谁最后见过他，什么时候，在哪儿。」"
+    },
+    "the_choir": {
+      "name": "无名合唱",
+      "faction": "雾港深海",
+      "attrs": {
+        "str": 20,
+        "dex": 5,
+        "int": 18,
+        "con": 20,
+        "cha": 3
+      },
+      "hp": 300,
+      "hp_max": 300,
+      "mp": 200,
+      "mp_max": 200,
+      "level": "不可名状",
+      "gold": 0,
+      "location": "灯塔",
+      "desc": "有时是雾里的歌声，有时是海底的震动。听过的人都说那不像声音，像有人在你的骨头里写字。",
+      "personality": "不可理解；既不仁慈，也不残忍。",
+      "speech": "（没有语言。只有频率。）"
+    }
+  },
+  "relations": {
+    "captain_zhou:player": {
+      "affinity": -18,
+      "respect": -15
+    },
+    "miss_lin:player": {
+      "affinity": 19,
+      "respect": 9
+    },
+    "inspector_gu:player": {
+      "affinity": 11,
+      "respect": 25
+    },
+    "old_shen:player": {
+      "affinity": 0,
+      "respect": 0
+    }
+  },
+  "market": {
+    "雾港码头": {
+      "bandage": {
+        "name": "纱布",
+        "price": 6,
+        "supply": 20,
+        "base_price": 5,
+        "type": "药品",
+        "desc": "码头药铺的纱布，便宜，管用。"
+      },
+      "flashlight": {
+        "name": "手电筒",
+        "price": 33,
+        "supply": 20,
+        "base_price": 30,
+        "type": "工具",
+        "desc": "铁壳手电，电池另买。光柱有点抖。"
+      },
+      "film": {
+        "name": "胶卷",
+        "price": 18,
+        "supply": 20,
+        "base_price": 18,
+        "type": "耗材",
+        "desc": "能拍三十六张。有些东西只有照片上才有。"
+      },
+      "whisky": {
+        "name": "威士忌",
+        "price": 23,
+        "supply": 20,
+        "base_price": 22,
+        "type": "饮品",
+        "desc": "码头上的硬通货，能压惊，也能套话。"
+      }
+    },
+    "雾港教堂": {
+      "holy_water": {
+        "name": "圣水",
+        "price": 10,
+        "supply": 20,
+        "base_price": 10,
+        "type": "仪式",
+        "desc": "林小姐说它有用。她没说对什么有用。"
+      },
+      "old_map": {
+        "name": "旧海图",
+        "price": 150,
+        "supply": 20,
+        "base_price": 150,
+        "type": "线索",
+        "desc": "画着雾港周边所有的暗礁与沉船，还有三个没有标注的坐标。"
+      },
+      "ledger": {
+        "name": "教会名册",
+        "price": 402,
+        "supply": 20,
+        "base_price": 400,
+        "type": "线索",
+        "desc": "记着三十年来所有'接受过心理疏导'的人名。有些名字被划掉了。"
+      }
+    }
+  },
+  "karma_ledger": [],
+  "world_flags": [
+    "无署名信",
+    "灯塔二十年未亮",
+    "雾季开始",
+    "势力:巡捕房 势盛",
+    "第八个烟盒",
+    "纪元:第1次大崩解",
+    "谣言:天地异象 沸腾",
+    "纪元:第2次大崩解",
+    "纪元:第3次大崩解",
+    "纪元:第4次大崩解",
+    "纪元:第5次大崩解"
+  ],
+  "ui": {
+    "skin": "neutral",
+    "motif": "悬疑·雾港",
+    "brand": "雾港",
+    "tagline": "别让灯塔亮起来",
+    "terms": {
+      "hero": "调查员",
+      "level": "经验",
+      "location": "所在地",
+      "hp": "体力",
+      "mp": "理智",
+      "gold": "法币",
+      "flow": "精神状态",
+      "phase": "雾势",
+      "karma": "未偿之债",
+      "inventory": "随身",
+      "chronicle": "调查日志",
+      "present": "在场",
+      "relations": "人脉",
+      "territory": "地界",
+      "track": "调查阶",
+      "stage": "级",
+      "codex": "档案",
+      "market": "黑市",
+      "milestones": "里程碑",
+      "factions": "势力",
+      "rumors": "传言",
+      "culture": "风气"
+    }
+  },
+  "event_log": [
+    {
+      "tick": 54,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密-10"
+    },
+    {
+      "tick": 54,
+      "type": "social",
+      "desc": "顾探长对陆离的敬重下降5"
+    },
+    {
+      "tick": 55,
+      "type": "tick",
+      "desc": "回合55结束"
+    },
+    {
+      "tick": 55,
+      "type": "travel",
+      "desc": "抵达「雾港教堂」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 56,
+      "type": "tick",
+      "desc": "回合56结束"
+    },
+    {
+      "tick": 57,
+      "type": "tick",
+      "desc": "回合57结束"
+    },
+    {
+      "tick": 58,
+      "type": "tick",
+      "desc": "回合58结束"
+    },
+    {
+      "tick": 59,
+      "type": "tick",
+      "desc": "回合59结束"
+    },
+    {
+      "tick": 59,
+      "type": "social",
+      "desc": "周船长对陆离的亲密5"
+    },
+    {
+      "tick": 59,
+      "type": "social",
+      "desc": "周船长对陆离的敬重上升3"
+    },
+    {
+      "tick": 60,
+      "type": "world",
+      "desc": "「天地异象」愈演愈烈，街谈巷议皆在此事"
+    },
+    {
+      "tick": 60,
+      "type": "tick",
+      "desc": "回合60结束"
+    },
+    {
+      "tick": 60,
+      "type": "prose",
+      "desc": "教堂是哥特式的，尖顶在雾里看不见。里面比外面暖，弥撒时唱的圣歌调子很怪——不像赞美，像在安抚什么。在场的是林小姐。刚才发生的事还压在心上：周船长对陆离的敬重上升3；「天地异象」愈演愈烈，街谈巷议皆在此事。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 60,
+      "type": "breakthrough",
+      "desc": "突破至 入门"
+    },
+    {
+      "tick": 61,
+      "type": "tick",
+      "desc": "回合61结束"
+    },
+    {
+      "tick": 62,
+      "type": "tick",
+      "desc": "回合62结束"
+    },
+    {
+      "tick": 62,
+      "type": "travel",
+      "desc": "抵达「沉船湾」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 63,
+      "type": "tick",
+      "desc": "回合63结束"
+    },
+    {
+      "tick": 64,
+      "type": "tick",
+      "desc": "回合64结束"
+    },
+    {
+      "tick": 64,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密5"
+    },
+    {
+      "tick": 64,
+      "type": "social",
+      "desc": "林小姐对陆离的敬重上升3"
+    },
+    {
+      "tick": 65,
+      "type": "tick",
+      "desc": "回合65结束"
+    },
+    {
+      "tick": 66,
+      "type": "tick",
+      "desc": "回合66结束"
+    },
+    {
+      "tick": 67,
+      "type": "tick",
+      "desc": "回合67结束"
+    },
+    {
+      "tick": 68,
+      "type": "tick",
+      "desc": "回合68结束"
+    },
+    {
+      "tick": 69,
+      "type": "tick",
+      "desc": "回合69结束"
+    },
+    {
+      "tick": 69,
+      "type": "travel",
+      "desc": "抵达「永昌号」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 70,
+      "type": "tick",
+      "desc": "回合70结束"
+    },
+    {
+      "tick": 71,
+      "type": "tick",
+      "desc": "回合71结束"
+    },
+    {
+      "tick": 72,
+      "type": "tick",
+      "desc": "回合72结束"
+    },
+    {
+      "tick": 73,
+      "type": "tick",
+      "desc": "回合73结束"
+    },
+    {
+      "tick": 74,
+      "type": "tick",
+      "desc": "回合74结束"
+    },
+    {
+      "tick": 74,
+      "type": "social",
+      "desc": "周船长对陆离的亲密-10"
+    },
+    {
+      "tick": 74,
+      "type": "social",
+      "desc": "周船长对陆离的敬重下降5"
+    },
+    {
+      "tick": 75,
+      "type": "tick",
+      "desc": "回合75结束"
+    },
+    {
+      "tick": 76,
+      "type": "tick",
+      "desc": "回合76结束"
+    },
+    {
+      "tick": 76,
+      "type": "travel",
+      "desc": "抵达「雾港码头」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 77,
+      "type": "tick",
+      "desc": "回合77结束"
+    },
+    {
+      "tick": 78,
+      "type": "tick",
+      "desc": "回合78结束"
+    },
+    {
+      "tick": 79,
+      "type": "tick",
+      "desc": "回合79结束"
+    },
+    {
+      "tick": 79,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密-15"
+    },
+    {
+      "tick": 79,
+      "type": "social",
+      "desc": "林小姐对陆离的敬重下降10"
+    },
+    {
+      "tick": 80,
+      "type": "tick",
+      "desc": "回合80结束"
+    },
+    {
+      "tick": 81,
+      "type": "tick",
+      "desc": "回合81结束"
+    },
+    {
+      "tick": 82,
+      "type": "tick",
+      "desc": "回合82结束"
+    },
+    {
+      "tick": 83,
+      "type": "tick",
+      "desc": "回合83结束"
+    },
+    {
+      "tick": 83,
+      "type": "travel",
+      "desc": "抵达「灯塔」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 84,
+      "type": "tick",
+      "desc": "回合84结束"
+    },
+    {
+      "tick": 84,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密-15"
+    },
+    {
+      "tick": 84,
+      "type": "social",
+      "desc": "顾探长对陆离的敬重下降10"
+    },
+    {
+      "tick": 85,
+      "type": "tick",
+      "desc": "回合85结束"
+    },
+    {
+      "tick": 86,
+      "type": "tick",
+      "desc": "回合86结束"
+    },
+    {
+      "tick": 87,
+      "type": "tick",
+      "desc": "回合87结束"
+    },
+    {
+      "tick": 88,
+      "type": "tick",
+      "desc": "回合88结束"
+    },
+    {
+      "tick": 89,
+      "type": "tick",
+      "desc": "回合89结束"
+    },
+    {
+      "tick": 89,
+      "type": "social",
+      "desc": "周船长对陆离的亲密-15"
+    },
+    {
+      "tick": 89,
+      "type": "social",
+      "desc": "周船长对陆离的敬重下降10"
+    },
+    {
+      "tick": 90,
+      "type": "tick",
+      "desc": "回合90结束"
+    },
+    {
+      "tick": 90,
+      "type": "prose",
+      "desc": "灯塔在港口最北端，塔身上的白漆掉了大半。塔下的屋子窗户全被木板钉死，只在门缝里透出一点煤油灯的光。在场的是沈伯、无名合唱。刚才发生的事还压在心上：周船长对陆离的亲密-15；周船长对陆离的敬重下降10。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 90,
+      "type": "travel",
+      "desc": "抵达「雾港教堂」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 91,
+      "type": "tick",
+      "desc": "回合91结束"
+    },
+    {
+      "tick": 92,
+      "type": "tick",
+      "desc": "回合92结束"
+    },
+    {
+      "tick": 93,
+      "type": "tick",
+      "desc": "回合93结束"
+    },
+    {
+      "tick": 94,
+      "type": "tick",
+      "desc": "回合94结束"
+    },
+    {
+      "tick": 94,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密8"
+    },
+    {
+      "tick": 95,
+      "type": "tick",
+      "desc": "回合95结束"
+    },
+    {
+      "tick": 96,
+      "type": "tick",
+      "desc": "回合96结束"
+    },
+    {
+      "tick": 97,
+      "type": "tick",
+      "desc": "回合97结束"
+    },
+    {
+      "tick": 97,
+      "type": "travel",
+      "desc": "抵达「沉船湾」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 98,
+      "type": "tick",
+      "desc": "回合98结束"
+    },
+    {
+      "tick": 99,
+      "type": "tick",
+      "desc": "回合99结束"
+    },
+    {
+      "tick": 99,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密6"
+    },
+    {
+      "tick": 99,
+      "type": "social",
+      "desc": "顾探长对陆离的敬重上升6"
+    },
+    {
+      "tick": 100,
+      "type": "tick",
+      "desc": "回合100结束"
+    },
+    {
+      "tick": 101,
+      "type": "tick",
+      "desc": "回合101结束"
+    },
+    {
+      "tick": 102,
+      "type": "tick",
+      "desc": "回合102结束"
+    },
+    {
+      "tick": 103,
+      "type": "tick",
+      "desc": "回合103结束"
+    },
+    {
+      "tick": 104,
+      "type": "tick",
+      "desc": "回合104结束"
+    },
+    {
+      "tick": 104,
+      "type": "travel",
+      "desc": "抵达「永昌号」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 105,
+      "type": "tick",
+      "desc": "回合105结束"
+    },
+    {
+      "tick": 106,
+      "type": "tick",
+      "desc": "回合106结束"
+    },
+    {
+      "tick": 107,
+      "type": "tick",
+      "desc": "回合107结束"
+    },
+    {
+      "tick": 108,
+      "type": "tick",
+      "desc": "回合108结束"
+    },
+    {
+      "tick": 109,
+      "type": "tick",
+      "desc": "回合109结束"
+    },
+    {
+      "tick": 109,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密4"
+    },
+    {
+      "tick": 109,
+      "type": "social",
+      "desc": "林小姐对陆离的敬重上升2"
+    },
+    {
+      "tick": 110,
+      "type": "tick",
+      "desc": "回合110结束"
+    },
+    {
+      "tick": 111,
+      "type": "tick",
+      "desc": "回合111结束"
+    },
+    {
+      "tick": 111,
+      "type": "travel",
+      "desc": "抵达「雾港码头」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 112,
+      "type": "world",
+      "desc": "「天地异象」在街巷间传开"
+    },
+    {
+      "tick": 112,
+      "type": "tick",
+      "desc": "回合112结束"
+    },
+    {
+      "tick": 113,
+      "type": "tick",
+      "desc": "回合113结束"
+    },
+    {
+      "tick": 114,
+      "type": "tick",
+      "desc": "回合114结束"
+    },
+    {
+      "tick": 114,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密6"
+    },
+    {
+      "tick": 114,
+      "type": "social",
+      "desc": "顾探长对陆离的敬重上升6"
+    },
+    {
+      "tick": 115,
+      "type": "tick",
+      "desc": "回合115结束"
+    },
+    {
+      "tick": 116,
+      "type": "tick",
+      "desc": "回合116结束"
+    },
+    {
+      "tick": 117,
+      "type": "tick",
+      "desc": "回合117结束"
+    },
+    {
+      "tick": 118,
+      "type": "tick",
+      "desc": "回合118结束"
+    },
+    {
+      "tick": 118,
+      "type": "travel",
+      "desc": "抵达「灯塔」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 119,
+      "type": "tick",
+      "desc": "回合119结束"
+    },
+    {
+      "tick": 119,
+      "type": "social",
+      "desc": "周船长对陆离的亲密-10"
+    },
+    {
+      "tick": 119,
+      "type": "social",
+      "desc": "周船长对陆离的敬重下降5"
+    },
+    {
+      "tick": 120,
+      "type": "tick",
+      "desc": "回合120结束"
+    },
+    {
+      "tick": 120,
+      "type": "prose",
+      "desc": "灯塔在港口最北端，塔身上的白漆掉了大半。塔下的屋子窗户全被木板钉死，只在门缝里透出一点煤油灯的光。在场的是沈伯、无名合唱。刚才发生的事还压在心上：周船长对陆离的亲密-10；周船长对陆离的敬重下降5。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 120,
+      "type": "breakthrough",
+      "desc": "突破至 老手"
+    },
+    {
+      "tick": 121,
+      "type": "tick",
+      "desc": "回合121结束"
+    },
+    {
+      "tick": 122,
+      "type": "tick",
+      "desc": "回合122结束"
+    },
+    {
+      "tick": 123,
+      "type": "tick",
+      "desc": "回合123结束"
+    },
+    {
+      "tick": 124,
+      "type": "tick",
+      "desc": "回合124结束"
+    },
+    {
+      "tick": 124,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密5"
+    },
+    {
+      "tick": 124,
+      "type": "social",
+      "desc": "林小姐对陆离的敬重上升3"
+    },
+    {
+      "tick": 125,
+      "type": "tick",
+      "desc": "回合125结束"
+    },
+    {
+      "tick": 125,
+      "type": "travel",
+      "desc": "抵达「雾港教堂」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 126,
+      "type": "tick",
+      "desc": "回合126结束"
+    },
+    {
+      "tick": 127,
+      "type": "tick",
+      "desc": "回合127结束"
+    },
+    {
+      "tick": 128,
+      "type": "tick",
+      "desc": "回合128结束"
+    },
+    {
+      "tick": 129,
+      "type": "tick",
+      "desc": "回合129结束"
+    },
+    {
+      "tick": 129,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密4"
+    },
+    {
+      "tick": 129,
+      "type": "social",
+      "desc": "顾探长对陆离的敬重上升2"
+    },
+    {
+      "tick": 130,
+      "type": "tick",
+      "desc": "回合130结束"
+    },
+    {
+      "tick": 131,
+      "type": "tick",
+      "desc": "回合131结束"
+    },
+    {
+      "tick": 131,
+      "type": "trade",
+      "desc": "陆离购买圣水×1，花费10法币"
+    },
+    {
+      "tick": 132,
+      "type": "tick",
+      "desc": "回合132结束"
+    },
+    {
+      "tick": 132,
+      "type": "travel",
+      "desc": "抵达「沉船湾」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 133,
+      "type": "tick",
+      "desc": "回合133结束"
+    },
+    {
+      "tick": 134,
+      "type": "tick",
+      "desc": "回合134结束"
+    },
+    {
+      "tick": 134,
+      "type": "social",
+      "desc": "周船长对陆离的亲密-10"
+    },
+    {
+      "tick": 134,
+      "type": "social",
+      "desc": "周船长对陆离的敬重下降5"
+    },
+    {
+      "tick": 135,
+      "type": "tick",
+      "desc": "回合135结束"
+    },
+    {
+      "tick": 136,
+      "type": "tick",
+      "desc": "回合136结束"
+    },
+    {
+      "tick": 137,
+      "type": "tick",
+      "desc": "回合137结束"
+    },
+    {
+      "tick": 138,
+      "type": "tick",
+      "desc": "回合138结束"
+    },
+    {
+      "tick": 139,
+      "type": "tick",
+      "desc": "回合139结束"
+    },
+    {
+      "tick": 139,
+      "type": "travel",
+      "desc": "抵达「永昌号」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 140,
+      "type": "tick",
+      "desc": "回合140结束"
+    },
+    {
+      "tick": 141,
+      "type": "tick",
+      "desc": "回合141结束"
+    },
+    {
+      "tick": 142,
+      "type": "tick",
+      "desc": "回合142结束"
+    },
+    {
+      "tick": 143,
+      "type": "tick",
+      "desc": "回合143结束"
+    },
+    {
+      "tick": 144,
+      "type": "tick",
+      "desc": "回合144结束"
+    },
+    {
+      "tick": 144,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密5"
+    },
+    {
+      "tick": 144,
+      "type": "social",
+      "desc": "顾探长对陆离的敬重上升3"
+    },
+    {
+      "tick": 145,
+      "type": "tick",
+      "desc": "回合145结束"
+    },
+    {
+      "tick": 146,
+      "type": "tick",
+      "desc": "回合146结束"
+    },
+    {
+      "tick": 146,
+      "type": "travel",
+      "desc": "抵达「雾港码头」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 147,
+      "type": "tick",
+      "desc": "回合147结束"
+    },
+    {
+      "tick": 148,
+      "type": "tick",
+      "desc": "回合148结束"
+    },
+    {
+      "tick": 149,
+      "type": "tick",
+      "desc": "回合149结束"
+    },
+    {
+      "tick": 149,
+      "type": "social",
+      "desc": "周船长对陆离的亲密-15"
+    },
+    {
+      "tick": 149,
+      "type": "social",
+      "desc": "周船长对陆离的敬重下降10"
+    },
+    {
+      "tick": 150,
+      "type": "tick",
+      "desc": "回合150结束"
+    },
+    {
+      "tick": 150,
+      "type": "prose",
+      "desc": "码头永远湿的。搬运工把货从船上扛到仓库，一天走三十趟。仓库墙上有一排粉笔写的名字，有些被人擦掉了一半。在场的是顾探长。刚才发生的事还压在心上：周船长对陆离的亲密-15；周船长对陆离的敬重下降10。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 151,
+      "type": "tick",
+      "desc": "回合151结束"
+    },
+    {
+      "tick": 152,
+      "type": "tick",
+      "desc": "回合152结束"
+    },
+    {
+      "tick": 153,
+      "type": "tick",
+      "desc": "回合153结束"
+    },
+    {
+      "tick": 153,
+      "type": "travel",
+      "desc": "抵达「灯塔」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 154,
+      "type": "tick",
+      "desc": "回合154结束"
+    },
+    {
+      "tick": 154,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密5"
+    },
+    {
+      "tick": 154,
+      "type": "social",
+      "desc": "林小姐对陆离的敬重上升3"
+    },
+    {
+      "tick": 155,
+      "type": "tick",
+      "desc": "回合155结束"
+    },
+    {
+      "tick": 156,
+      "type": "tick",
+      "desc": "回合156结束"
+    },
+    {
+      "tick": 157,
+      "type": "tick",
+      "desc": "回合157结束"
+    },
+    {
+      "tick": 158,
+      "type": "tick",
+      "desc": "回合158结束"
+    },
+    {
+      "tick": 159,
+      "type": "tick",
+      "desc": "回合159结束"
+    },
+    {
+      "tick": 159,
+      "type": "social",
+      "desc": "顾探长对陆离的亲密8"
+    },
+    {
+      "tick": 160,
+      "type": "tick",
+      "desc": "回合160结束"
+    },
+    {
+      "tick": 160,
+      "type": "travel",
+      "desc": "抵达「雾港教堂」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 161,
+      "type": "tick",
+      "desc": "回合161结束"
+    },
+    {
+      "tick": 162,
+      "type": "tick",
+      "desc": "回合162结束"
+    },
+    {
+      "tick": 163,
+      "type": "tick",
+      "desc": "回合163结束"
+    },
+    {
+      "tick": 164,
+      "type": "tick",
+      "desc": "回合164结束"
+    },
+    {
+      "tick": 164,
+      "type": "social",
+      "desc": "周船长对陆离的亲密5"
+    },
+    {
+      "tick": 164,
+      "type": "social",
+      "desc": "周船长对陆离的敬重上升3"
+    },
+    {
+      "tick": 165,
+      "type": "tick",
+      "desc": "回合165结束"
+    },
+    {
+      "tick": 166,
+      "type": "tick",
+      "desc": "回合166结束"
+    },
+    {
+      "tick": 167,
+      "type": "tick",
+      "desc": "回合167结束"
+    },
+    {
+      "tick": 167,
+      "type": "travel",
+      "desc": "抵达「沉船湾」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 168,
+      "type": "tick",
+      "desc": "回合168结束"
+    },
+    {
+      "tick": 169,
+      "type": "tick",
+      "desc": "回合169结束"
+    },
+    {
+      "tick": 169,
+      "type": "social",
+      "desc": "林小姐对陆离的亲密5"
+    },
+    {
+      "tick": 169,
+      "type": "social",
+      "desc": "林小姐对陆离的敬重上升3"
+    },
+    {
+      "tick": 170,
+      "type": "tick",
+      "desc": "回合170结束"
+    },
+    {
+      "tick": 171,
+      "type": "tick",
+      "desc": "回合171结束"
+    },
+    {
+      "tick": 172,
+      "type": "tick",
+      "desc": "回合172结束"
+    },
+    {
+      "tick": 173,
+      "type": "tick",
+      "desc": "回合173结束"
+    },
+    {
+      "tick": 174,
+      "type": "tick",
+      "desc": "回合174结束"
+    },
+    {
+      "tick": 174,
+      "type": "travel",
+      "desc": "抵达「永昌号」：沿途留意了路边的动静"
+    },
+    {
+      "tick": 175,
+      "type": "world",
+      "desc": "「天地异象」在街巷间传开"
+    },
+    {
+      "tick": 175,
+      "type": "tick",
+      "desc": "回合175结束"
+    },
+    {
+      "tick": 176,
+      "type": "tick",
+      "desc": "回合176结束"
+    },
+    {
+      "tick": 177,
+      "type": "tick",
+      "desc": "回合177结束"
+    },
+    {
+      "tick": 178,
+      "type": "tick",
+      "desc": "回合178结束"
+    },
+    {
+      "tick": 179,
+      "type": "tick",
+      "desc": "回合179结束"
+    },
+    {
+      "tick": 179,
+      "type": "social",
+      "desc": "周船长对陆离的亲密4"
+    },
+    {
+      "tick": 179,
+      "type": "social",
+      "desc": "周船长对陆离的敬重上升2"
+    },
+    {
+      "tick": 180,
+      "type": "tick",
+      "desc": "回合180结束"
+    },
+    {
+      "tick": 180,
+      "type": "prose",
+      "desc": "永昌号是一艘老货船，甲板上的铁锈比油漆多。雾大的时候，站在船头看不见船尾。船长说，这艘船跑过的最远一趟，船上少了一个人。在场的是周船长。刚才发生的事还压在心上：周船长对陆离的亲密4；周船长对陆离的敬重上升2。 世界的相位落在「r」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 180,
+      "type": "breakthrough",
+      "desc": "突破至 专家"
+    },
+    {
+      "tick": 180,
+      "type": "travel",
+      "desc": "抵达「永昌号」：回到城里，把这一路的事记下来"
+    },
+    {
+      "tick": 180,
+      "type": "prose",
+      "desc": "永昌号是一艘老货船，甲板上的铁锈比油漆多。雾大的时候，站在船头看不见船尾。船长说，这艘船跑过的最远一趟，船上少了一个人。在场的是周船长。刚才发生的事还压在心上：突破至 专家；抵达「永昌号」：回到城里，把这一路的事记下来。 世界的相位落在「r」——这种时候，任何小事都可能被放大。"
+    }
+  ],
+  "world_info": {
+    "name": "雾港",
+    "era": "民国二十六年 · 冬至",
+    "location_desc": "雾港的雾是从海面上来的，带着咸味和一点铁锈味。你站在『永昌号』的甲板上，手里攥着一封没有署名的信——信上只写了一句话：'别让灯塔亮起来。'汽笛响了第三声，码头上的搬运工都停了手，朝灯塔的方向看。"
+  },
+  "playbook": {
+    "loop": "choice",
+    "input": "choice",
+    "progress": {
+      "axis": "knowledge",
+      "label": "线索",
+      "max": 24
+    },
+    "failure": {
+      "mode": "sanity",
+      "label": "理智",
+      "max": 0
+    },
+    "beat": {
+      "pattern": [
+        "异常",
+        "线索",
+        "更深的疑问",
+        "代价",
+        "回收"
+      ],
+      "every": 5
+    },
+    "settlement": [
+      "social",
+      "trade",
+      "karma",
+      "combat"
+    ],
+    "context": {
+      "inject": [
+        "lore",
+        "cast",
+        "chronicle",
+        "quests"
+      ],
+      "max_lore": 9,
+      "scan_depth": 3
+    }
+  },
+  "playbook_notes": [],
+  "questlines": [
+    {
+      "id": "fog_lighthouse",
+      "title": "别让灯塔亮起来",
+      "summary": "一封没有署名的信，指向二十年前那个冬至。",
+      "stages": [
+        {
+          "id": "letter",
+          "title": "信",
+          "objectives": [
+            "弄清信是谁写的",
+            "去码头打听灯塔的传闻"
+          ],
+          "enter_if": null,
+          "exit_if": {
+            "visited": "雾港码头"
+          },
+          "next": [
+            "keeper"
+          ],
+          "on_enter": []
+        },
+        {
+          "id": "keeper",
+          "title": "看守",
+          "objectives": [
+            "找到沈伯",
+            "问出他为什么二十年不让灯亮"
+          ],
+          "enter_if": null,
+          "exit_if": {
+            "visited": "灯塔"
+          },
+          "next": [
+            "ledger"
+          ],
+          "on_enter": []
+        },
+        {
+          "id": "ledger",
+          "title": "名册",
+          "objectives": [
+            "拿到教会的名册",
+            "对上那七个名字"
+          ],
+          "enter_if": null,
+          "exit_if": null,
+          "next": [],
+          "on_enter": []
+        }
+      ],
+      "visibility": {
+        "flag": "无署名信"
+      },
+      "fail_if": null,
+      "deadline_tick": null,
+      "reward": {
+        "flags": [
+          "灯塔真相"
+        ]
+      },
+      "tags": [
+        "主线",
+        "真相"
+      ]
+    },
+    {
+      "id": "fog_seven",
+      "title": "七个空烟盒",
+      "summary": "顾探长桌上七个烟盒，每个装一张失踪者的照片。第八个是空的。",
+      "stages": [
+        {
+          "id": "meet_gu",
+          "title": "见顾探长",
+          "objectives": [
+            "让他愿意跟你换情报"
+          ],
+          "enter_if": null,
+          "exit_if": {
+            "relation_gte": {
+              "with": "inspector_gu",
+              "respect": 20
+            }
+          },
+          "next": [
+            "bay"
+          ],
+          "on_enter": []
+        },
+        {
+          "id": "bay",
+          "title": "沉船湾",
+          "objectives": [
+            "退潮时去沉船湾",
+            "找到第四个失踪者留下的东西"
+          ],
+          "enter_if": null,
+          "exit_if": {
+            "visited": "沉船湾"
+          },
+          "next": [],
+          "on_enter": []
+        }
+      ],
+      "visibility": {
+        "visited": "雾港码头"
+      },
+      "fail_if": null,
+      "deadline_tick": null,
+      "reward": {
+        "flags": [
+          "第八个烟盒"
+        ]
+      },
+      "tags": [
+        "支线",
+        "调查"
+      ]
+    }
+  ],
+  "quests": {
+    "fog_lighthouse": {
+      "status": "active",
+      "stage": "ledger",
+      "done_stages": [
+        "letter",
+        "keeper"
+      ],
+      "entered_at": {
+        "letter": 1,
+        "keeper": 7,
+        "ledger": 14
+      },
+      "history": [
+        {
+          "tick": 1,
+          "stage": "letter",
+          "event": "enter"
+        },
+        {
+          "tick": 7,
+          "stage": "letter",
+          "event": "complete"
+        },
+        {
+          "tick": 7,
+          "stage": "keeper",
+          "event": "enter"
+        },
+        {
+          "tick": 14,
+          "stage": "keeper",
+          "event": "complete"
+        },
+        {
+          "tick": 14,
+          "stage": "ledger",
+          "event": "enter"
+        }
+      ]
+    },
+    "fog_seven": {
+      "status": "done",
+      "stage": "bay",
+      "done_stages": [
+        "meet_gu",
+        "bay"
+      ],
+      "entered_at": {
+        "meet_gu": 7,
+        "bay": 25
+      },
+      "history": [
+        {
+          "tick": 7,
+          "stage": "meet_gu",
+          "event": "enter"
+        },
+        {
+          "tick": 25,
+          "stage": "meet_gu",
+          "event": "complete"
+        },
+        {
+          "tick": 25,
+          "stage": "bay",
+          "event": "enter"
+        },
+        {
+          "tick": 28,
+          "stage": "bay",
+          "event": "complete"
+        },
+        {
+          "tick": 28,
+          "stage": "bay",
+          "event": "done"
+        }
+      ]
+    }
+  },
+  "currency": "法币",
+  "config": {
+    "level_tiers": [
+      "外行",
+      "入门",
+      "老手",
+      "专家",
+      "权威",
+      "传奇"
+    ],
+    "event_log_keep": 200,
+    "archive": true,
+    "recap_budget_chars": 1500,
+    "summary_keep": 30,
+    "milestone_keep": 200,
+    "panel_port": 8765,
+    "karma_ledger_keep": 500,
+    "stage_max": 20
+  },
+  "places": {
+    "永昌号": {
+      "desc": "永昌号是一艘老货船，甲板上的铁锈比油漆多。雾大的时候，站在船头看不见船尾。船长说，这艘船跑过的最远一趟，船上少了一个人。在场的是周船长。刚才发生的事还压在心上：突破至 专家；抵达「永昌号」：回到城里，把这一路的事记下来。 世界的相位落在「r」——这种时候，任何小事都可能被放大。",
+      "tick": 180
+    },
+    "雾港码头": {
+      "desc": "码头永远湿的。搬运工把货从船上扛到仓库，一天走三十趟。仓库墙上有一排粉笔写的名字，有些被人擦掉了一半。在场的是顾探长。刚才发生的事还压在心上：周船长对陆离的亲密-15；周船长对陆离的敬重下降10。 世界的相位落在「K」——这种时候，任何小事都可能被放大。",
+      "tick": 150
+    },
+    "灯塔": {
+      "desc": "灯塔在港口最北端，塔身上的白漆掉了大半。塔下的屋子窗户全被木板钉死，只在门缝里透出一点煤油灯的光。在场的是沈伯、无名合唱。刚才发生的事还压在心上：周船长对陆离的亲密-10；周船长对陆离的敬重下降5。 世界的相位落在「K」——这种时候，任何小事都可能被放大。",
+      "tick": 120
+    },
+    "雾港教堂": {
+      "desc": "教堂是哥特式的，尖顶在雾里看不见。里面比外面暖，弥撒时唱的圣歌调子很怪——不像赞美，像在安抚什么。在场的是林小姐。刚才发生的事还压在心上：周船长对陆离的敬重上升3；「天地异象」愈演愈烈，街谈巷议皆在此事。 世界的相位落在「K」——这种时候，任何小事都可能被放大。",
+      "tick": 60
+    },
+    "沉船湾": {
+      "desc": "沉船湾的礁石只在水位最低的时候露出来，露出的时候像一排牙齿。老渔民说，退潮时能听见船在下面响。此刻只有你一个人。刚才发生的事还压在心上：事业线「fog_seven」完成；周船长对陆离的亲密8。 世界的相位落在「K」——这种时候，任何小事都可能被放大。",
+      "tick": 30
+    }
+  },
+  "lore": [
+    {
+      "keys": [
+        "基调",
+        "文风"
+      ],
+      "secondary_keys": [],
+      "content": "克苏鲁式悬疑底色：冷静、克制、越查越冷。不写怪物的全貌，写'多出来的影子'、'多出来的声音'、'记录里对不上的一个数字'。恐怖来自'解释不通'，而不是'吓人一跳'。叙事按「一个异常 → 一条线索 → 一个更不敢问的问题」推进；每 3-5 回合至少让一个此前可信的东西变得可疑（包括主角自己的记忆）。",
+      "comment": "基调与叙事约定",
+      "selective": false,
+      "constant": true,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "理智",
+        "San",
+        "精神",
+        "梦境"
+      ],
+      "secondary_keys": [],
+      "content": "理智不是你有多清醒，是你还能承受多少'不合理的解释'。每次接触不可名状之物，理智都会掉；理智低到一定程度，你会开始梦见海——梦见的时候很舒服，醒来才发现自己在流眼泪。理智可以靠休息、酒精、和人说话恢复一点，但每次恢复都会模糊掉一点细节。",
+      "comment": "理智与梦境",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "经验",
+        "调查阶",
+        "外行",
+        "专家"
+      ],
+      "secondary_keys": [],
+      "content": "调查员分六阶：外行（靠运气）→ 入门（靠方法）→ 老手（靠人脉）→ 专家（靠判断）→ 权威（靠名声）→ 传奇（靠活着）。能查到什么，取决于你能看懂什么。同一张照片，外行看见人，专家看见背景里的门牌号。",
+      "comment": "调查阶（六阶）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "灯塔",
+        "光",
+        "二十年",
+        "亮"
+      ],
+      "secondary_keys": [],
+      "content": "灯塔上一次亮是二十年前的冬至。那一夜之后，港里失踪了七个人，教会的名册上多了一页被撕掉的记录，而灯塔的看守换成了沈伯——那年他四十岁，从那以后再没让灯亮过。信上说的'别让灯塔亮起来'，不是警告，是请求。",
+      "comment": "灯塔（核心谜题）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "教会",
+        "林小姐",
+        "名册",
+        "心理疏导"
+      ],
+      "secondary_keys": [],
+      "content": "雾港教会做两件事：救济穷人，和'心理疏导'。疏导的记录从不外流，只有一本名册，记着谁接受过、什么时候、以及'是否适合继续生活在港内'。林小姐是执事，也是名册的保管人。她相信教会做的是对的，但她自己已经三年没做过礼拜了。",
+      "comment": "雾港教会（表面善意）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "巡捕房",
+        "顾探长",
+        "失踪案",
+        "七个"
+      ],
+      "secondary_keys": [],
+      "content": "顾探长办过七桩失踪案，一桩也没破。不是他不查，是每次查到某个点，卷宗就会'恰好'被调走。他桌上七个空烟盒，每个装一张照片。第八个烟盒是空的——他说那是留给下一个失踪者的。",
+      "comment": "巡捕房（无力者）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "沉船湾",
+        "暗礁",
+        "退潮",
+        "船"
+      ],
+      "secondary_keys": [],
+      "content": "沉船湾在雾港北面，退潮时露出一排礁石。二十年前那七个人里，有四个的最后踪迹指向这里。老渔民说，退潮时能听见船在下面响——不是木头的声音，是'有人在数数'。",
+      "comment": "沉船湾（地理线索）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "深海",
+        "合唱",
+        "无名",
+        "不可名状"
+      ],
+      "secondary_keys": [],
+      "content": "它没有名字，也不需要有。渔民叫它'合唱'，因为听见的人会觉得很多声音在同时说话。它不主动害人，它只是'在那里'；人一旦靠近，就会自己开始理解它——而理解它的代价，是再也没法理解别的东西。",
+      "comment": "深海与无名合唱（不可名状之物）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    },
+    {
+      "keys": [
+        "主线",
+        "长局",
+        "三线",
+        "真相"
+      ],
+      "secondary_keys": [],
+      "content": "百万回合也不迷路的三条线：① 个人线——从外行查到传奇，每提升一阶就要付一次代价（理智、关系、或者一段记忆）；② 棋局线——教会、巡捕房、港口商会在灯塔问题上各怀鬼胎，主角每查明一分就被迫选边；③ 真相线——二十年前灯塔为什么亮、七个人去了哪里、写信的人是谁。三条线按「个人线驱动 → 棋局线施压 → 真相线显影」循环；每 50-100 回合至少推进一格。",
+      "comment": "三线主线（长局方向）",
+      "selective": false,
+      "constant": false,
+      "case_sensitive": false,
+      "order": 100,
+      "enabled": true,
+      "match_whole_words": false,
+      "exclude_recursion": false,
+      "use_probability": true
+    }
+  ],
+  "codex": {
+    "locations": [
+      "永昌号",
+      "雾港码头",
+      "灯塔",
+      "雾港教堂",
+      "沉船湾"
+    ],
+    "people": [
+      "林小姐",
+      "顾探长",
+      "沈伯",
+      "无名合唱",
+      "周船长"
+    ],
+    "items": [
+      "威士忌",
+      "纱布",
+      "圣水"
+    ],
+    "lore": []
+  },
+  "counters": {
+    "locations": 5,
+    "people": 5,
+    "items": 3
+  },
+  "rng_counter": 220,
+  "factions": {
+    "永昌号": {
+      "power": 53.79419532292438,
+      "reach": 0.2
+    },
+    "雾港教会": {
+      "power": 52.35411636836885,
+      "reach": 0.2
+    },
+    "灯塔看守": {
+      "power": 53.701676298657766,
+      "reach": 0.2
+    },
+    "巡捕房": {
+      "power": 59.730179478665285,
+      "reach": 0.2
+    },
+    "雾港深海": {
+      "power": 53.44691315444096,
+      "reach": 0.2
+    }
+  },
+  "_faction_leader": "巡捕房",
+  "rumors": {
+    "天地异象": {
+      "s": 0.7380720843513453,
+      "i": 0.19004700365077143,
+      "r": 0.07188091199788324,
+      "heat": 0.19
+    }
+  },
+  "panarchy": {
+    "capital": 0.5746,
+    "connectedness": 0.6071,
+    "stress": 0.0,
+    "phase": "r",
+    "hold": 0,
+    "collapses": 5
+  },
+  "milestones": [
+    {
+      "tick": 6,
+      "kind": "探索",
+      "desc": "初次抵达「雾港码头」"
+    },
+    {
+      "tick": 13,
+      "kind": "探索",
+      "desc": "初次抵达「灯塔」"
+    },
+    {
+      "tick": 20,
+      "kind": "探索",
+      "desc": "初次抵达「雾港教堂」"
+    },
+    {
+      "tick": 27,
+      "kind": "探索",
+      "desc": "初次抵达「沉船湾」"
+    },
+    {
+      "tick": 60,
+      "kind": "突破",
+      "desc": "突破至 入门（第 1 次）"
+    },
+    {
+      "tick": 120,
+      "kind": "突破",
+      "desc": "突破至 老手（第 2 次）"
+    },
+    {
+      "tick": 180,
+      "kind": "突破",
+      "desc": "突破至 专家（第 3 次）"
+    }
+  ],
+  "culture": {
+    "tradition": 0.4969,
+    "innovation": 0.515
+  },
+  "summaries": [
+    {
+      "upto_tick": 25,
+      "text": "第 25 回合：雾港教堂。顾探长对陆离的亲密6；顾探长对陆离的敬重上升6；事业线「fog_seven」推进到：沉船湾"
+    },
+    {
+      "upto_tick": 50,
+      "text": "第 50 回合：灯塔。「天地异象」在街巷间传开；林小姐对陆离的亲密-15；林小姐对陆离的敬重下降10"
+    },
+    {
+      "upto_tick": 75,
+      "text": "第 75 回合：永昌号。抵达「永昌号」：沿途留意了路边的动静；周船长对陆离的亲密-10；周船长对陆离的敬重下降5"
+    },
+    {
+      "upto_tick": 100,
+      "text": "第 100 回合：沉船湾。抵达「沉船湾」：沿途留意了路边的动静；顾探长对陆离的亲密6；顾探长对陆离的敬重上升6"
+    },
+    {
+      "upto_tick": 125,
+      "text": "第 125 回合：灯塔。突破至 老手；林小姐对陆离的亲密5；林小姐对陆离的敬重上升3"
+    },
+    {
+      "upto_tick": 150,
+      "text": "第 150 回合：雾港码头。抵达「雾港码头」：沿途留意了路边的动静；周船长对陆离的亲密-15；周船长对陆离的敬重下降10"
+    },
+    {
+      "upto_tick": 175,
+      "text": "第 175 回合：永昌号。林小姐对陆离的敬重上升3；抵达「永昌号」：沿途留意了路边的动静；「天地异象」在街巷间传开"
+    }
+  ],
+  "prose": [
+    {
+      "tick": 30,
+      "location": "沉船湾",
+      "text": "沉船湾的礁石只在水位最低的时候露出来，露出的时候像一排牙齿。老渔民说，退潮时能听见船在下面响。此刻只有你一个人。刚才发生的事还压在心上：事业线「fog_seven」完成；周船长对陆离的亲密8。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 60,
+      "location": "雾港教堂",
+      "text": "教堂是哥特式的，尖顶在雾里看不见。里面比外面暖，弥撒时唱的圣歌调子很怪——不像赞美，像在安抚什么。在场的是林小姐。刚才发生的事还压在心上：周船长对陆离的敬重上升3；「天地异象」愈演愈烈，街谈巷议皆在此事。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 90,
+      "location": "灯塔",
+      "text": "灯塔在港口最北端，塔身上的白漆掉了大半。塔下的屋子窗户全被木板钉死，只在门缝里透出一点煤油灯的光。在场的是沈伯、无名合唱。刚才发生的事还压在心上：周船长对陆离的亲密-15；周船长对陆离的敬重下降10。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 120,
+      "location": "灯塔",
+      "text": "灯塔在港口最北端，塔身上的白漆掉了大半。塔下的屋子窗户全被木板钉死，只在门缝里透出一点煤油灯的光。在场的是沈伯、无名合唱。刚才发生的事还压在心上：周船长对陆离的亲密-10；周船长对陆离的敬重下降5。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 150,
+      "location": "雾港码头",
+      "text": "码头永远湿的。搬运工把货从船上扛到仓库，一天走三十趟。仓库墙上有一排粉笔写的名字，有些被人擦掉了一半。在场的是顾探长。刚才发生的事还压在心上：周船长对陆离的亲密-15；周船长对陆离的敬重下降10。 世界的相位落在「K」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 180,
+      "location": "永昌号",
+      "text": "永昌号是一艘老货船，甲板上的铁锈比油漆多。雾大的时候，站在船头看不见船尾。船长说，这艘船跑过的最远一趟，船上少了一个人。在场的是周船长。刚才发生的事还压在心上：周船长对陆离的亲密4；周船长对陆离的敬重上升2。 世界的相位落在「r」——这种时候，任何小事都可能被放大。"
+    },
+    {
+      "tick": 180,
+      "location": "永昌号",
+      "text": "永昌号是一艘老货船，甲板上的铁锈比油漆多。雾大的时候，站在船头看不见船尾。船长说，这艘船跑过的最远一趟，船上少了一个人。在场的是周船长。刚才发生的事还压在心上：突破至 专家；抵达「永昌号」：回到城里，把这一路的事记下来。 世界的相位落在「r」——这种时候，任何小事都可能被放大。"
+    }
+  ],
+  "archived_events": 96
+}

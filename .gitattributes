@@ -1,0 +1,22 @@
+# 行尾与资产完整性
+# 说明：git 属性按“最后匹配的规则生效”，故通用规则在前、资产保真规则在后。
+
+# 文本统一 LF（仓库内存储），各平台 checkout 按需转换
+*.py text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.in text eol=lf
+
+# 二进制
+*.png binary
+*.jpg binary
+*.gif binary
+
+# 第三方 vendored 资产按字节保真（BRAND.md 登记了精确大小与 sha256；
+# 放在最后以覆盖上面的 *.js 通用规则，否则 Windows 上校验会对不上）
+assets/* -text
+*.min.js -text
