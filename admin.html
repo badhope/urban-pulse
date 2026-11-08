@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>World Games · Console</title>
+<meta name="description" content="Local administration console for World Games: saves, health, diagnostics." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0f13'/%3E%3Ctext x='16' y='22.5' font-size='17' text-anchor='middle' fill='%23e8b04b' font-family='serif'%3E%E8%A1%8C%3C/text%3E%3C/svg%3E" />
+<style>
+  /* 亮色默认，暗色跟随系统偏好（控制台是"看一眼就走"的页面，不需要手动开关） */
+  :root {
+    --bg:#f6f4ee; --surface:#fffdf8; --surface2:#f3efe6; --line:#ddd5c6;
+    --text:#1d2027; --dim:#4c5361; --faint:#6b7382; --accent:#8a5a12;
+    --ok:#2f6b34; --warn:#8a5a12; --bad:#a8342b;
+    --ok-line:#b6cdb7; --warn-line:#ddc9a3; --bad-line:#d8b3ae;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0b0d11; --surface:#141820; --surface2:#1b212b; --line:#2b3341;
+      --text:#ecebe6; --dim:#a3abb9; --faint:#7d8695; --accent:#e8b04b;
+      --ok:#6fbf73; --warn:#e0a24b; --bad:#e06c62;
+      --ok-line:#2f5a33; --warn-line:#5a4a2f; --bad-line:#5a2f2f;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{width:min(1100px,calc(100% - 40px));margin:0 auto}
+  header{border-bottom:1px solid var(--line);padding:20px 0}
+  header .wrap{display:flex;align-items:center;gap:14px}
+  .seal{width:34px;height:34px;display:grid;place-items:center;border:1px solid #8a6a2c;
+        border-radius:8px;color:var(--accent);font-weight:700}
+  h1{font-size:19px;font-weight:600;color:var(--accent)}
+  .sub{color:var(--faint);font-size:13px}
+  main{padding:26px 0 60px}
+  h2{font-size:15px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;margin:26px 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .card .k{color:var(--faint);font-size:12px}
+  .card .v{font-size:20px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+  table{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);
+        border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+  th{color:var(--faint);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line)}
+  .pill.ok{color:var(--ok);border-color:var(--ok-line)}
+  .pill.bad{color:var(--bad);border-color:var(--bad-line)}
+  .pill.warn{color:var(--warn);border-color:var(--warn-line)}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:13px;color:var(--dim)}
+  .note{color:var(--faint);font-size:12.5px;margin-top:8px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .readonly{display:inline-block;font-size:11px;color:var(--faint);border:1px solid var(--line);
+            border-radius:4px;padding:0 6px;margin-left:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <span class="seal">行</span>
+    <div>
+      <h1>World Games <span class="readonly">read-only console</span></h1>
+      <div class="sub" id="sub">loading…</div>
+    </div>
+    <div style="margin-left:auto"><a href="/">← stage</a></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2>Runtime</h2>
+  <div class="grid" id="runtime"></div>
+
+  <h2>Save library</h2>
+  <table>
+    <thead><tr><th>Save</th><th>Turn</th><th>World</th><th>Size</th><th>Modified</th></tr></thead>
+    <tbody id="saves"><tr><td colspan="5">loading…</td></tr></tbody>
+  </table>
+  <p class="note">The console is read-only: switching, snapshotting and deleting saves stays in the host
+    agent (session_switch / session_snapshot / session_manage), so there is exactly one writer.</p>
+
+  <h2>Diagnostics</h2>
+  <table>
+    <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+    <tbody id="diag"></tbody>
+  </table>
+</main>
+
+<script src="/admin.js"></script>
+</body>
+</html>

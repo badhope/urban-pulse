@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "world-walker"
+version = "1.10.1"
+description = "World Games — 标准库游戏规则核心、可选 MCP 服务器与支持行动队列的状态展示面板"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "badhope" }]
+keywords = ["interactive-fiction", "mcp", "ai-agent", "text-game", "emergent-narrative", "rule-engine"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+# 锁定版本见 requirements-mcp.lock.txt（经 OSV 扫描无已知漏洞）
+mcp = ["mcp>=2.3,<3"]
+
+[project.scripts]
+wg = "game_engine.cli:main"
+world-games = "game_engine.cli:main"
+world-games-mcp = "game_engine.mcp_server:main"
+# 兼容别名（v1.2.0 更名前的入口，保留以免现有客户端配置失效）
+world-walker = "game_engine.engine:main"
+world-walker-mcp = "game_engine.mcp_server:main"
+
+[tool.setuptools]
+# 仓库根即 game_engine 包（引擎内部统一 `import game_engine.*`）
+package-dir = { "game_engine" = "." }
+packages = ["game_engine", "game_engine.rules"]
+
+# 运行时按路径读取的非 .py 资源必须进包，否则 pip 安装后 open_panel / load_setting 会找不到文件
+[tool.setuptools.package-data]
+game_engine = [
+  "panel.html",
+  "panel.css",
+  "panel.js",
+  "panel.i18n.js",
+  "panel.theme.js",
+  "admin.html",
+  "admin.js",
+  "cli.py",
+  "mcp_primitives.py",
+  "action_log.py",
+  "assets/*.js",
+  "settings/*.json",
+  "settings/*.md",
+  "README.md",
+  "README.zh-CN.md",
+  "BRAND.md",
+  "ARCHITECTURE.md",
+  "GAME_MASTER_PROTOCOL.md",
+  "CHANGELOG.md",
+  "ROADMAP.md",
+  "CONTRIBUTING.md",
+  "CODE_OF_CONDUCT.md",
+  "SECURITY.md",
+  "docs/*.md",
+  "docs/metrics.json",
+  "docs/screenshots/*.png",
+  "docs/screenshots/*.md",
+  "docs/screenshots/*.mp4",
+  "docs/demo/*.json",
+  "docs/demo/*.jsonl",
+  "docs/demo/*.md",
+]

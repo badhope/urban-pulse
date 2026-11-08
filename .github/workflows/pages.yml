@@ -1,0 +1,62 @@
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 校验展示站素材齐全
+        run: |
+          python - <<'PY'
+          import os, sys
+          need = [
+              "docs/index.html",
+              "docs/screenshots/stage-xuanshu.png",
+              "docs/screenshots/stage-ink.png",
+              "docs/screenshots/stage-neon.png",
+              "docs/screenshots/stage-neutral.png",
+              "docs/screenshots/command-palette.png",
+              "docs/screenshots/character-card.png",
+              "docs/screenshots/action-queue.png",
+              "docs/screenshots/walkthrough.mp4",
+              "docs/BENCHMARK.md",
+          ]
+          missing = [p for p in need if not os.path.exists(p) or os.path.getsize(p) == 0]
+          print("missing:", missing)
+          sys.exit(1 if missing else 0)
+          PY
+      - uses: actions/configure-pages@v5
+        with:
+          # 仓库第一次跑时自动启用 Pages（否则 deploy-pages 会因为站点不存在而失败）。
+          # 需要本文件顶部的 pages: write 权限。
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

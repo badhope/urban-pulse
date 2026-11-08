@@ -1,0 +1,27 @@
+# 依赖锁定（mcp 可选依赖链）
+#
+# 为什么需要：pyproject.toml 里 `mcp>=2.3,<3` 是区间，上游发新版可能带行为变更或
+# 引入漏洞。本文件把 CI 与实际验证过的版本钉住，作为"可复现构建"的基准。
+#
+# 用法：pip install -r requirements-mcp.lock.txt
+# 更新：改版本号后必须跑一遍 scripts/verify_mcp_stdio.py + scripts/smoke_ui.py
+#
+# ⚠ 每一行都必须在 Python 3.10 上可安装：pyproject 声明 `requires-python >=3.10`，
+#   而 mcp 2.3 传递依赖的 httpx2 >=2.15 / starlette >=1.8 / pydantic-settings >=2.16
+#   都要求 3.11。锁定在下面这组版本，3.10 与 3.13 才都能装出来（CI 矩阵两端都验）。
+#   改版本前先查 `requires_python`，否则 py3.10 作业会直接装不上。
+#
+# 校验记录（2026-11-08）：全部包经 PyPI metadata 核对 requires_python 含 3.10。
+
+mcp==2.3.0
+mcp-types==2.3.0
+anyio==4.15.1
+httpx2==2.14.0
+httpx==0.28.1
+httpx-sse==0.4.3
+pydantic==2.14.1
+pydantic-core==2.50.1
+pydantic-settings==2.15.0
+sse-starlette==3.5.0
+starlette==1.7.0
+uvicorn==0.54.0

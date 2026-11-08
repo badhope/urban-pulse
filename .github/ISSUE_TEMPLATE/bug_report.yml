@@ -1,0 +1,60 @@
+name: Bug report
+description: 报告一个可复现的问题（规则结算 / 面板 / MCP / 打包）
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢报告。为了让问题能被定位，请尽量填全以下信息。
+        如果是**结算数值不对**，请附上状态文件片段与复现命令——我们会用同种子重放。
+  - type: dropdown
+    id: area
+    attributes:
+      label: 影响范围
+      options:
+        - 规则结算（combat / trade / social / karma / advance）
+        - 世界演化（tick / 势力 / 相位 / 谣言）
+        - MCP 工具或协议
+        - 面板界面 / 交互
+        - 打包安装 / 入口点
+        - 文档与示例
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      description: "`python -c \"import game_engine; print(game_engine.__version__)\"` 的输出"
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      placeholder: "Windows 11 / Python 3.13 / mcp 1.30.0"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 最小命令序列或界面操作步骤
+      placeholder: |
+        1. load_setting(path="settings/折剑行.setting.json")
+        2. trade(location="洛水渡", item="jinchuang_yao", direction="buy", quantity=2)
+        3. 观察返回的 total_cost
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望 vs 实际
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关输出
+      description: 自检脚本输出、报错栈、或面板截图（截断到关键部分即可）
+      render: shell
